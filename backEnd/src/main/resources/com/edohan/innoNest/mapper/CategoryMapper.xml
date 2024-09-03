@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edohan.innoNest.mapper.CategoryMapper">
+    <select id="categoryList" resultType="java.util.Map">
+        SELECT 
+            A.ID                AS ID, 
+            A.NAME              AS NAME,
+            A.DESCRIPTION       AS DESCRIPTION
+        FROM 
+            TB_CATEGORY A
+        WHERE
+            A.STATUS = 'ACTIVE'
+        ORDER BY 
+            A.ID DESC
+    </select>
+</mapper>

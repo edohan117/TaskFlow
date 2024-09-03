@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edohan.innoNest.mapper.MainMapper">
+    <select id="highViewCountSelect" resultType="java.util.Map">
+        SELECT 
+            ID, 
+            TITLE, 
+            CONTENT, 
+            WRITER, 
+            TAGS, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'LIKE') AS LIKE_COUNT, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'DISLIKE') AS DISLIKE_COUNT,
+            WRITERDATE, 
+            UPDATEDATE, 
+            VIEW_COUNT, 
+            CATEGORY, 
+            STATUS
+        FROM 
+            TB_IDEA
+        WHERE 
+            STATUS = 'ACTIVE'
+        ORDER BY 
+            VIEW_COUNT DESC
+        LIMIT 2
+    </select>
+
+    <select id="recentPostsSelect" resultType="java.util.Map">
+        SELECT 
+            ID, 
+            TITLE, 
+            CONTENT, 
+            WRITER, 
+            TAGS, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'LIKE') AS LIKE_COUNT, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'DISLIKE') AS DISLIKE_COUNT,
+            WRITERDATE, 
+            UPDATEDATE, 
+            VIEW_COUNT, 
+            CATEGORY, 
+            STATUS
+        FROM 
+            TB_IDEA
+        WHERE 
+            STATUS = 'ACTIVE'
+        ORDER BY 
+            WRITERDATE DESC
+        LIMIT 2
+
+    </select>
+
+    <select id="topLikedPostsSelect" resultType="java.util.Map">
+        SELECT 
+            ID, 
+            TITLE, 
+            CONTENT, 
+            WRITER, 
+            TAGS, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'LIKE') AS LIKE_COUNT, 
+            (SELECT COUNT(*) FROM TB_REACTIONS WHERE IDEA_ID = TB_IDEA.ID AND REACTION_TYPE = 'DISLIKE') AS DISLIKE_COUNT,
+            WRITERDATE, 
+            UPDATEDATE, 
+            VIEW_COUNT, 
+            CATEGORY, 
+            STATUS
+        FROM 
+            TB_IDEA
+        WHERE 
+            STATUS = 'ACTIVE'
+        ORDER BY 
+            (LIKE_COUNT - DISLIKE_COUNT) DESC
+        LIMIT 2
+    </select>
+</mapper>

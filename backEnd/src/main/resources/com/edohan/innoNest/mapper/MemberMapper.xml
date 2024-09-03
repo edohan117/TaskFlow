@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edohan.innoNest.mapper.MemberMapper">
+
+    <!-- Member list -->
+    <select id="memberList" resultType="java.util.Map">
+        SELECT ID,
+                USERNAME,
+                PASSWORD,
+                PHONE,
+                EMAIL,
+                ROLE,
+                CREATEDATE,
+                UPDATEDATE
+        FROM TB_MEMBER
+    </select>
+    
+    <!-- 회원 등록 -->
+    <insert id="insertMember" parameterType="java.util.Map">
+        INSERT INTO 
+        TB_MEMBER 
+            (ID,
+            USERNAME,
+            PASSWORD,
+            EMAIL,
+            PHONE,
+            ROLE,
+            CREATEDATE,
+            UPDATEDATE)
+        VALUES 
+            (#{id},
+            #{username},
+            #{password},
+            #{email},
+            #{phone},
+            'USER',
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- 사용자 비밀번호 조회 -->
+    <select id="getPasswordByUsername" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT PASSWORD
+        FROM TB_MEMBER
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 사용자 이름 조회 -->
+    <select id="getUsernameById" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT USERNAME
+        FROM TB_MEMBER
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 사용자 권한 조회 -->
+    <select id="getRoleById" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT ROLE
+        FROM TB_MEMBER
+        WHERE ID = #{id}
+    </select>
+    
+    <select id="getProfileById" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT 
+            ID,
+            USERNAME,
+            EMAIL,
+            PHONE,
+            ROLE,
+            PROFILE_PICTURE,
+            BIO,
+            SOCIAL_LINKS,
+            LOCATION,
+            CREATEDATE,
+            UPDATEDATE
+        FROM 
+            TB_MEMBER
+        WHERE 
+            ID = #{id}
+    </select>
+</mapper>
