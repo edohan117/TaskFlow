@@ -10,17 +10,14 @@
           <div class="idea-meta">
             <div class="idea-author">
               <span>{{ idea.WRITER }}</span>
+              <div class="idea-tags">
+                <span v-for="tag in parseTags(idea.TAGS)" :key="tag" class="tag">{{ tag }}</span>
+              </div>
             </div>
             <div class="idea-stats">
               <span>LIKES {{ idea.LIKE_COUNT }}<i class="bi bi-hand-thumbs-up"></i></span>
               <span>DISLIKES {{ idea.DISLIKE_COUNT }}<i class="bi bi-hand-thumbs-down"></i></span>
               <span>VIEW {{ idea.VIEW_COUNT }}</span>
-            </div>
-            <div class="idea-date">
-              <span>{{ formatDate(idea.WRITERDATE) }}</span>
-            </div>
-            <div class="idea-tags">
-              <span v-for="tag in parseTags(idea.TAGS)" :key="tag" class="tag">{{ tag }}</span>
             </div>
           </div>
         </article>
@@ -71,50 +68,37 @@ export default {
 </script>
 
 <style scoped>
-/* Container for the idea list */
 .idea-list {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  padding: 1rem;
 }
 
-/* Title styles */
 h3 {
   font-size: 2rem;
-  /* Increased font size for consistency */
   color: #333;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* Flex container for the idea cards */
 .idea-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  /* Gap between cards */
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-/* Style for each idea card link */
 .idea-card-link {
   text-decoration: none;
-  flex: 1 1 300px;
-  /* Allows cards to grow and shrink, with a minimum width of 300px */
 }
 
-/* Style for each idea card */
 .idea-card {
   background-color: #fff;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* Ensures all cards are the same height */
 }
 
 /* Hover effect for cards */
@@ -135,9 +119,12 @@ h3 {
   color: #34495e;
   margin-bottom: 1rem;
   line-height: 1.6;
-  white-space: pre-wrap; /* 줄바꿈과 연속 공백을 그대로 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨기기 */
-  text-overflow: ellipsis; /* 잘린 텍스트에 말줄임표 표시 */
+  white-space: pre-wrap;
+  /* 줄바꿈과 연속 공백을 그대로 유지 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis;
+  /* 잘린 텍스트에 말줄임표 표시 */
 }
 
 /* Meta information styling */
