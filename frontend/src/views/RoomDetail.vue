@@ -308,7 +308,7 @@ export default {
     };
 
     const canEditOrDelete = computed(() => {
-      return role.value === 'ADMIN' || user.value?.id === room.value?.USER_ID;
+      return role.value === 'ADMIN';
     });
 
     const getDifficultyLabel = (n) => {

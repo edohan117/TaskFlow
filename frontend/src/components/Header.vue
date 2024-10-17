@@ -15,7 +15,7 @@
       </nav>
       <div class="auth">
         <div v-if="isLoggedIn && user && user.id" class="user-profile" @click="toggleProfileMenu">
-          <span class="sessionId">{{ user.username }} 님</span>
+          <span class="sessionId">{{ user.nickname }} 님</span>
           <div v-if="profileMenuOpen" class="profile-menu">
             <router-link to="/myProfile" @click="closeMenu" class="profile-menu-link">Profile</router-link>
             <router-link to="/myLikes" @click="closeMenu" class="profile-menu-link">MyLikes</router-link>

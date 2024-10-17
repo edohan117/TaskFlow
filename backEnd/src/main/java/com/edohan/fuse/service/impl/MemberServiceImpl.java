@@ -17,10 +17,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Map<String, Object> register(Map<String, String> memberRequest) {
-        String id = memberRequest.get("id");
-        memberRequest.put("id", id); 
-        mapper.insertMember(memberRequest);
+    public Map<String, Object> register(Map<String, String> map) {
+        mapper.insertMember(map);
         return Collections.singletonMap("status", "registered");
     }
 
@@ -30,11 +28,13 @@ public class MemberServiceImpl implements MemberService {
         String storedPassword = mapper.getPassword(userId);
         if (password.equals(storedPassword)) {
             String username = mapper.getUserNm(userId);
+            String nickname = mapper.getNickNm(userId);
             String role = mapper.getRole(userId);
 
             return Map.of(
                 "status", "success",
                 "username", username,
+                "nickname", nickname,
                 "role", role
             );
         } else {
@@ -52,6 +52,13 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public Map<String, Object> getProfile(String userId) {
         return mapper.getProfile(userId);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public boolean deleteMember(String userId) {
+        Integer rs = mapper.deleteMember(userId);
+        return rs > 0;
     }
 
     @Override

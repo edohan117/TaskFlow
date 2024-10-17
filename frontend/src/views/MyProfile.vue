@@ -2,16 +2,24 @@
   <section class="profile-container">
     <div class="profile-header">
       <div class="profile-avatar">
-        <img :src="profile.PROFILE_PICTURE" :alt="profile.USERNAME">
+        <img :src="profile.PROFILE_PICTURE" :alt="profile.USER_NM">
       </div>
-      <h1>{{ profile.USERNAME }}의 프로필</h1>
+      <h1>{{ profile.NICK_NM }}님의 프로필</h1>
       <p class="bio">{{ profile.BIO }}</p>
     </div>
     <div class="profile-content">
       <div class="profile-info">
         <div class="info-item">
           <i class="bi bi-person"></i>
-          <span>ID: {{ profile.ID }}</span>
+          <span>ID: {{ profile.USER_ID }}</span>
+        </div>
+        <div class="info-item">
+          <i class="bi bi-person"></i>
+          <span>이름: {{ profile.USER_NM }}</span>
+        </div>
+        <div class="info-item">
+          <i class="bi bi-cake2"></i>
+          <span>생일: {{ profile.BIRTH }}</span>
         </div>
         <div class="info-item">
           <i class="bi bi-envelope"></i>
@@ -23,24 +31,51 @@
         </div>
         <div class="info-item">
           <i class="bi bi-geo-alt"></i>
-          <span>위치: {{ profile.LOCATION }}</span>
-        </div>
-        <div class="info-item">
-          <i class="bi bi-calendar-check"></i>
-          <span>가입일: {{ formatDate(profile.CREATEDATE) }}</span>
-        </div>
-        <div class="info-item">
-          <i class="bi bi-clock-history"></i>
-          <span>최종 수정일: {{ formatDate(profile.UPDATEDATE) }}</span>
-        </div>
-        <div class="info-item">
-          <i class="bi bi-link-45deg"></i>
-          <a :href="profile.SOCIAL_LINKS" target="_blank" rel="noopener noreferrer">LINK</a>
+          <span>위치: {{ profile.ADDRESS }}</span>
         </div>
       </div>
     </div>
     <div class="profile-actions">
-      <button class="edit-profile">프로필 편집</button>
+      <button class="edit-profile" @click="openEditModal">프로필 편집</button>
+    </div>
+
+    <div v-if="isEditModalVisible" class="modal" @click="closeEditModal">
+      <div class="modal-content" @click.stop>
+        <span class="close" @click="closeEditModal">&times;</span>
+        <div class="profile-header" :style="{ backgroundImage: `url(${profile.PROFILE_PICTURE})` }">
+          <div class="profile-avatar">
+            <img :src="profile.PROFILE_PICTURE" :alt="profile.USER_NM">
+          </div>
+          <h1>{{ profile.USER_NM }}님의 프로필 편집</h1>
+        </div>
+        <div class="profile-details">
+          <div class="form-group">
+            <label>UserId : {{ profile.USER_ID }}</label>
+          </div>
+          <div class="form-group">
+            <label>NickName:</label>
+            <input v-model="profile.NICK_NM">
+          </div>
+          <div class="form-group">
+            <label>Birth:</label>
+            <input v-model="profile.BIRTH" type="date">
+          </div>
+          <div class="form-group">
+            <label>Email : {{ profile.EMAIL }}</label>
+          </div>
+          <div class="form-group">
+            <label>Phone:</label>
+            <input v-model="profile.PHONE">
+          </div>
+          <div class="form-group">
+            <label>Address:</label>
+            <input v-model="profile.ADDRESS">
+          </div>
+        </div>
+        <div class="button-container">
+          <button class="btn btn-primary" @click="updateProfile">Update</button>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -52,7 +87,8 @@ export default {
   name: 'UserProfile',
   data() {
     return {
-      profile: {}
+      profile: {},
+      isEditModalVisible: false
     };
   },
   created() {
@@ -69,9 +105,23 @@ export default {
           console.error('Error fetching profile data:', error);
         });
     },
-    formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString('ko-KR', options);
+    openEditModal() {
+      this.isEditModalVisible = true; // 모달 표시
+    },
+    closeEditModal() {
+      this.isEditModalVisible = false; // 모달 숨기기
+    },
+    updateProfile() {
+      console.log(this.profile);
+      axios.put('api/member/profile', this.profile)
+        .then(response => {
+          console.log('Profile updated:', response.data);
+          this.fetchProfileData(); // 업데이트된 프로필 다시 가져오기
+          this.closeEditModal(); // 모달 숨기기
+        })
+        .catch(error => {
+          console.error('Error updating profile:', error);
+        });
     }
   }
 };
@@ -169,5 +219,106 @@ export default {
 
 .edit-profile:hover {
   background-color: #2980b9;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1001;
+  width: 90%;
+  max-width: 500px;
+}
+
+.close {
+  cursor: pointer;
+  float: right;
+  font-size: 1.5rem;
+}
+
+.profile-details {
+  margin-top: 20px;
+}
+
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #495057;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* 필요에 따라 여백 조정 */
+  margin-bottom: 20px; /* 필요에 따라 여백 조정 */
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px; /* 셀 간격 조정 */
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.8;
 }
 </style>

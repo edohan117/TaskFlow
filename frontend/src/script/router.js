@@ -19,7 +19,7 @@ import MemberList from '@/views/MemberList.vue';
 import MyProfile from '@/views/MyProfile.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: Home, meta: { title: '홈' } },
+  { path: '/', name: 'Home', component: Home, meta: { title: 'FuseEscape' } },
   { path: '/loginForm', name: 'LoginForm', component: LoginForm, meta: { title: '로그인' } },
   { path: '/roomList', name: 'RoomList', component: RoomList, meta: { title: '방탈출 목록' } },
   { path: '/myLikes', name: 'MyLikes', component: MyLikes, meta: { title: '나의 좋아요' } },
@@ -45,20 +45,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('id');
-  const role = localStorage.getItem('role');
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  const isAuthenticated = !!user;
+  const role = sessionStorage.getItem('role');
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/loginForm'); // 로그인 페이지로 리다이렉트
+    console.log(to.meta.requiresAuth);
+    next('/loginForm'); 
   } else if (to.meta.admin && role !== 'ADMIN') {
-    alert('접근할 수 있는 권한이 아닙니다'); // 권한이 없는 경우 알림 메시지 표시
-    next('/'); // 홈 페이지로 리다이렉트
+    alert('접근할 수 있는 권한이 아닙니다'); 
+    next('/'); 
   } else {
     next();
   }
 });
 
-// 페이지 제목 설정
 router.afterEach((to) => {
   document.title = to.meta.title || '기본 제목'; // 기본 제목을 설정
 });

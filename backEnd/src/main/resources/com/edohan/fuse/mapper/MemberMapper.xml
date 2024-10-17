@@ -2,70 +2,71 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edohan.fuse.mapper.MemberMapper">
 
-    <!-- Member list -->
     <select id="memberList" resultType="java.util.Map">
         SELECT USER_ID,
                 USER_NM,
+                NICK_NM, 
                 PHONE,
                 EMAIL,
+                BIRTH,
                 ROLE,
+                BIO,
+                PROFILE_PICTURE,
+                ADDRESS,
+                USE_YN,
                 CREATEDATE,
                 UPDATEDATE
         FROM TB_MEMBER
+        WHERE 1 = 1
+        ORDER BY ROLE
     </select>
     
-    <!-- 회원 등록 -->
     <insert id="insertMember" parameterType="java.util.Map">
         INSERT INTO 
         TB_MEMBER 
             (USER_ID,
             USER_NM,
+            NICK_NM,
             PASSWORD,
             PHONE,
             EMAIL,
             BIRTH,
             ROLE,
-            SOCIAL_LINKS,
-            POST_CODE,
-            ROAD_ADDRESS,
-            JIBUN_ADDRESS,
-            DETAIL_ADDRESS,
-            EXTRA_ADDRESS,
+            ADDRESS,
             CREATEDATE,
             UPDATEDATE)
         VALUES 
-            (#{userId},
+            (#{id},
             #{userNm},
+            #{nickNm},
             #{password},
             #{phone},
             #{email},
             #{birth},
             'USER',
-            #{socialLinks},
-            #{postCode},
-            #{roadAddress},
-            #{jibunAddress},
-            #{detailAddress},
-            #{extraAddress},
+            #{address},
             NOW(),
             NOW())
     </insert>
 
-    <!-- 사용자 비밀번호 조회 -->
     <select id="getPassword" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT PASSWORD
         FROM TB_MEMBER
         WHERE USER_ID = #{userId}
     </select>
 
-    <!-- 사용자 이름 조회 -->
     <select id="getUserNm" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT USER_NM
         FROM TB_MEMBER
         WHERE USER_ID = #{userId}
     </select>
+    
+    <select id="getNickNm" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT NICK_NM
+        FROM TB_MEMBER
+        WHERE USER_ID = #{userId}
+    </select>
 
-    <!-- 사용자 권한 조회 -->
     <select id="getRole" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT ROLE
         FROM TB_MEMBER
@@ -76,6 +77,7 @@
         SELECT 
             USER_ID,
             USER_NM,
+            NICK_NM,
             PASSWORD,
             PHONE,
             EMAIL,
@@ -83,12 +85,7 @@
             ROLE,
             PROFILE_PICTURE,
             BIO,
-            SOCIAL_LINKS,
-            POST_CODE,
-            ROAD_ADDRESS,
-            JIBUN_ADDRESS,
-            DETAIL_ADDRESS,
-            EXTRA_ADDRESS,
+            ADDRESS,
             CREATEDATE,
             UPDATEDATE
         FROM 
@@ -102,4 +99,9 @@
         FROM TB_MEMBER
         WHERE USER_ID = #{id}
     </select>
+
+    <delete id="deleteMember" parameterType="String">
+        DELETE FROM TB_MEMBER
+        WHERE USER_ID = #{userId}
+    </delete>
 </mapper>

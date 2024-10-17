@@ -10,7 +10,11 @@ public interface MemberMapper {
 
     String getUserNm(String userId);
 
+    String getNickNm(String userId);
+
     String getRole(String userId);
+    
+    Integer deleteMember(String userId);
 
     List<Map<String, Object>> memberList();
 

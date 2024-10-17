@@ -4,12 +4,12 @@
     <form @submit.prevent="register">
       <div class="form-group">
         <div class="input-group">
-          <input v-model="id" id="id" type="text" required  @input="idChecked = false" placeholder="ID"/>
+          <input v-model="id" id="id" type="text" required @input="idChecked = false" placeholder="ID" @keydown.enter="checkIdDuplicate" />
           <button type="button" @click="checkIdDuplicate" class="btn-secondary">중복확인</button>
         </div>
         <p v-if="!isIdAvailable && idChecked" class="error">이미 사용 중인 아이디입니다.</p>
       </div>
-      
+
       <div class="form-group">
         <input v-model="password" id="password" type="password" placeholder="PASSWORD" required />
         <p v-if="!isPasswordValid && password" class="error">비밀번호는 영문, 숫자, 특수문자를 포함 8자리 이상이어야 합니다.</p>
@@ -25,33 +25,55 @@
       </div>
       
       <div class="form-group">
+        <input v-model="nickName" id="nickName" type="text" placeholder="닉네임" required />
+      </div>
+      
+      <div class="form-group">
         <label for="phone">전화번호</label>
-        <input v-model="phone" id="phone" type="text" @input="formatPhoneNumber" required />
+        <div class="input-group">
+          <input v-model="phonePart1" id="phonePart1" type="text" maxlength="3" placeholder="000" required @input="filterPhoneInput('phonePart1')" />
+          <span>-</span>
+          <input v-model="phonePart2" id="phonePart2" type="text" maxlength="4" placeholder="0000" required @input="filterPhoneInput('phonePart2')" />
+          <span>-</span>
+          <input v-model="phonePart3" id="phonePart3" type="text" maxlength="4" placeholder="0000" required @input="filterPhoneInput('phonePart3')" />
+        </div>
       </div>
       
       <div class="form-group">
         <label for="birthdate">생년월일</label>
-        <input v-model="birthdate" id="birthdate" type="date" required />
+        <div class="input-group">
+          <select v-model="selectedYear" @change="updateBirthdate">
+            <option value="">연도 선택</option>
+            <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+          </select>
+          <select v-model="selectedMonth" @change="updateBirthdate">
+            <option value="">월 선택</option>
+            <option v-for="month in months" :key="month" :value="month">{{ month }}월</option>
+          </select>
+          <select v-model="selectedDay" @change="updateBirthdate">
+            <option value="">일 선택</option>
+            <option v-for="day in days" :key="day" :value="day">{{ day }}일</option>
+          </select>
+        </div>
       </div>
-    
+      
       <div class="form-group">
         <label for="email">이메일</label>
         <div class="input-group">
-          <input v-model="emailPrefix" id="emailPrefix" type="text" placeholder="이메일 앞부분" @input="updateEmail" />
+          <input v-model="emailPrefix" id="emailPrefix" type="text" placeholder="이메일 앞부분" @input="validateEmail" />
           <span>@</span>
-          <input v-model="emailPrefix" id="emailfix" type="text" placeholder="이메일 뒷부분" @input="updateEmail" />
-          <select v-model="emailDomain" @change="updateEmail">
-            <option value="">선택</option>
+          <input v-model="emailDomain" id="emailDomain" type="text" placeholder="이메일 도메인" @input="validateEmail" v-if="selectedDomain === '직접입력'" />
+          <select v-model="selectedDomain" @change="updateEmailDomain">
+            <option value="직접입력">직접입력</option>
             <option value="gmail.com">gmail.com</option>
             <option value="naver.com">naver.com</option>
             <option value="daum.net">daum.net</option>
-            <option value="yahoo.com">yahoo.com</option>
-            <option value="direct-input">직접 입력</option>
+            <option value="hotmail.com">hotmail.com</option>
           </select>
-          <input v-if="emailDomain === 'direct-input'" v-model="customEmailDomain" type="text" placeholder="직접 입력" @input="updateEmail" />
+          <button type="button" @click="checkEmail" class="btn-secondary">이메일인증</button>
         </div>
-        <p v-if="!isEmailValid && email" class="error">올바른 이메일 형식이 아닙니다.</p>
-      </div>
+        <p v-if="!isEmailValid && emailPrefix" class="error">올바른 이메일 형식이 아닙니다.</p>
+    </div>
 
       <div class="form-group address-group">
         <label>주소</label>
@@ -67,17 +89,8 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <input v-model="sns" id="sns" type="text" placeholder="SNS 주소 (선택)" />
-      </div>
-
-      <!-- <div class="form-group">
-        <label for="profilePicture">프로필 사진</label>
-        <input type="file" id="profilePicture" @change="handleFileUpload" />
-      </div> -->
-
       <button type="submit" :disabled="!canRegister" class="btn-primary">회원가입</button>
-      
+
       <div v-if="!canRegister" class="feedback-message">
         <p>회원가입을 완료하려면 다음 사항을 확인해주세요:</p>
         <ul>
@@ -85,10 +98,11 @@
           <li v-if="!isPasswordValid">올바른 형식의 비밀번호를 입력해주세요.</li>
           <li v-if="passwordMismatch">비밀번호 확인이 일치하지 않습니다.</li>
           <li v-if="!username">이름을 입력해주세요.</li>
-          <li v-if="!phone">전화번호를 입력해주세요.</li>
+          <li v-if="!nickName">닉네임을 입력해주세요.</li>
+          <li v-if="!phonePart1 || !phonePart2 || !phonePart3">전화번호를 입력해주세요.</li>
           <li v-if="!birthdate">생년월일을 입력해주세요.</li>
           <li v-if="!roadAddress">주소를 입력해주세요.</li>
-          <li v-if="email && !isEmailValid">올바른 이메일 형식을 입력해주세요.</li>
+          <li v-if="emailPrefix && !isEmailValid">올바른 이메일 형식을 입력해주세요.</li>
         </ul>
       </div>
     </form>
@@ -108,19 +122,44 @@ export default {
     const password = ref('');
     const confirmPassword = ref('');
     const username = ref('');
-    const phone = ref('');
-    const birthdate = ref('');
-    const email = ref('');
+    const nickName = ref('');
+    const phonePart1 = ref('');
+    const phonePart2 = ref('');
+    const phonePart3 = ref('');
+    const emailPrefix = ref('');
+    const emailDomain = ref('');
     const postcode = ref('');
     const roadAddress = ref('');
     const jibunAddress = ref('');
     const detailAddress = ref('');
     const extraAddress = ref('');
-    const sns = ref('');
-    const profilePicture = ref(null);
     const isIdAvailable = ref(false);
     const isEmailValid = ref(true);
     const idChecked = ref(false);
+    const selectedYear = ref('');
+    const selectedMonth = ref('');
+    const selectedDay = ref('');
+    const birthdate = ref('');
+    const selectedDomain = ref('직접입력');
+
+    const filterPhoneInput = (part) => {
+      if (part === 'phonePart1') {
+        phonePart1.value = phonePart1.value.replace(/\D/g, '');
+      } else if (part === 'phonePart2') {
+        phonePart2.value = phonePart2.value.replace(/\D/g, '');
+      } else if (part === 'phonePart3') {
+        phonePart3.value = phonePart3.value.replace(/\D/g, '');
+      }
+    };
+
+    const updateEmailDomain = () => {
+      if (selectedDomain.value !== '직접입력') {
+        emailDomain.value = selectedDomain.value;
+      } else {
+        emailDomain.value = '';
+      }
+      validateEmail();
+    };
 
     const passwordMismatch = computed(() => password.value !== confirmPassword.value);
     const isPasswordValid = computed(() => {
@@ -129,18 +168,32 @@ export default {
     });
 
     const isIdValid = computed(() => {
-      const regex = /^[a-zA-Z0-9-_]{6,12}$/; // 아이디 정규 표현식
+      const regex = /^[a-zA-Z0-9-_]{6,12}$/;
       return regex.test(id.value);
     });
 
-    const canRegister = computed(() => 
-      id.value && isIdAvailable.value && isIdValid.value && idChecked && password.value && confirmPassword.value && 
-      username.value && phone.value && birthdate.value && !passwordMismatch.value && 
-      isPasswordValid.value && roadAddress.value && (email.value === '' || isEmailValid.value)
+    const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
+    const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+    const days = computed(() => {
+      const month = parseInt(selectedMonth.value, 10);
+      if (!month) return [];
+      const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+      const daysInMonth = [31, isLeapYear(selectedYear.value) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      return Array.from({ length: daysInMonth[month - 1] }, (_, i) => String(i + 1).padStart(2, '0'));
+    });
+
+    const canRegister = computed(() =>
+      id.value && isIdAvailable.value && isIdValid.value && idChecked.value &&
+      password.value && confirmPassword.value && username.value && nickName.value &&
+      phonePart1.value && phonePart2.value && phonePart3.value &&
+      birthdate.value && !passwordMismatch.value && isPasswordValid.value &&
+      roadAddress.value && (emailPrefix.value === '' || isEmailValid.value)
     );
 
-    const handleFileUpload = (event) => {
-      profilePicture.value = event.target.files[0];
+    const updateBirthdate = () => {
+      const month = String(selectedMonth.value).padStart(2, '0');
+      const day = String(selectedDay.value).padStart(2, '0');
+      birthdate.value = `${selectedYear.value}-${month}-${day}`;
     };
 
     const checkIdDuplicate = async () => {
@@ -152,7 +205,7 @@ export default {
         }
         try {
           const checkId = id.value.toUpperCase();
-          const response = await axios.post('/api/member/check-id', { id: checkId});
+          const response = await axios.post('/api/member/check-id', { id: checkId });
           isIdAvailable.value = response.data.available;
           idChecked.value = true;
           alert(isIdAvailable.value ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.');
@@ -164,29 +217,29 @@ export default {
       }
     };
 
-    const formatPhoneNumber = () => {
-      let formatted = phone.value.replace(/\D/g, '');
-      if (formatted.length >= 3) {
-        formatted = formatted.substring(0, 3) + '-' + formatted.substring(3);
+    const filterInput = (part) => {
+      const phoneRegex = /^[0-9]*$/;
+      if (part === 'phonePart1' && phonePart1.value.length <= 3) {
+        phonePart1.value = phonePart1.value.replace(phoneRegex, '');
+      } else if (part === 'phonePart2' && phonePart2.value.length <= 4) {
+        phonePart2.value = phonePart2.value.replace(phoneRegex, '');
+      } else if (part === 'phonePart3' && phonePart3.value.length <= 4) {
+        phonePart3.value = phonePart3.value.replace(phoneRegex, '');
       }
-      if (formatted.length >= 8) {
-        formatted = formatted.substring(0, 8) + '-' + formatted.substring(8);
-      }
-      phone.value = formatted.substring(0, 13);
     };
 
     const validateEmail = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      isEmailValid.value = regex.test(email.value) || email.value === '';
+      isEmailValid.value = regex.test(`${emailPrefix.value}@${emailDomain.value}`) || emailPrefix.value === '';
     };
 
     const execDaumPostcode = () => {
       new window.daum.Postcode({
-        oncomplete: function(data) {
+        oncomplete: function (data) {
           postcode.value = data.zonecode;
           roadAddress.value = data.roadAddress;
           jibunAddress.value = data.jibunAddress;
-          
+
           if (data.userSelectedType === 'R') {
             extraAddress.value = data.bname && /[동|로|가]$/g.test(data.bname) ? `(${data.bname})` : '';
             extraAddress.value += data.buildingName && data.apartment === 'Y' ? (extraAddress.value ? `, ${data.buildingName}` : `(${data.buildingName})`) : '';
@@ -203,15 +256,15 @@ export default {
         formData.append('id', id.value);
         formData.append('password', password.value);
         formData.append('username', username.value);
-        formData.append('phone', phone.value);
+        formData.append('nickName', nickName.value);
+        formData.append('phone', `${phonePart1.value}-${phonePart2.value}-${phonePart3.value}`);
         formData.append('birthdate', birthdate.value);
-        formData.append('email', email.value);
+        formData.append('email', `${emailPrefix.value}@${emailDomain.value}`.toLowerCase());
         formData.append('address', `${roadAddress.value} ${detailAddress.value} ${extraAddress.value}`.trim());
-        formData.append('sns', sns.value);
-        if (profilePicture.value) {
-          formData.append('profilePicture', profilePicture.value);
-        }
 
+        for (const [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
         try {
           const response = await axios.post('/api/member/register', formData, {
             headers: {
@@ -220,7 +273,7 @@ export default {
           });
           if (response.data.status === 'registered') {
             alert('회원가입 성공!');
-            router.push('/login');
+            router.push('/loginForm');
           } else {
             alert('회원가입 실패!');
           }
@@ -238,28 +291,40 @@ export default {
       password,
       confirmPassword,
       username,
-      phone,
-      birthdate,
-      email,
+      nickName,
+      emailPrefix,
+      emailDomain,
       postcode,
       roadAddress,
       jibunAddress,
       detailAddress,
       extraAddress,
-      sns,
-      handleFileUpload,
+      phonePart1,
+      phonePart2,
+      phonePart3,
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+      birthdate,
+      years,
+      months,
+      days,
       register,
       checkIdDuplicate,
       passwordMismatch,
       isPasswordValid,
       isIdValid,
-      formatPhoneNumber,
       execDaumPostcode,
       canRegister,
       validateEmail,
       isEmailValid,
       isIdAvailable,
-      idChecked
+      idChecked,
+      updateBirthdate,
+      filterInput,
+      selectedDomain,
+      filterPhoneInput,
+      updateEmailDomain,
     };
   },
   mounted() {
@@ -277,7 +342,7 @@ export default {
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -300,8 +365,7 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="date"],
-input[type="file"] {
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -328,7 +392,7 @@ input[type="file"] {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  white-space: nowrap;
+  white-space: nowrap; /* 글씨가 두 줄로 나오지 않도록 설정 */
 }
 
 .btn-primary {
@@ -383,4 +447,15 @@ input[readonly] {
 .address-group .input-group:last-child input {
   width: 50%;
 }
+
+.input-group select {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+}
+
+
 </style>
