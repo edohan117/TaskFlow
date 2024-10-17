@@ -1,9 +1,9 @@
-package com.edohan.innoNest.controller;
+package com.edohan.fuse.controller;
 
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.edohan.innoNest.service.CommonService;
+import com.edohan.fuse.service.CommonService;
 
 @RestController
 @RequestMapping("/api/common")

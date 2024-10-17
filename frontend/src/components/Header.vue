@@ -2,11 +2,7 @@
   <header :class="['header', { 'scrolled': isScrolled }]">
     <div class="container">
       <div class="logo">
-<<<<<<< HEAD
         <router-link to="/" class="logo-link">Fuse ESCAPE</router-link>
-=======
-        <router-link to="/" class="logo-link">Fuse</router-link>
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
       </div>
       <nav class="nav">
         <router-link to="/newThemeList" class="nav-link">신규테마</router-link>

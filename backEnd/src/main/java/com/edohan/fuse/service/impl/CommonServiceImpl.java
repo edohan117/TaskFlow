@@ -1,10 +1,10 @@
-package com.edohan.innoNest.service.impl;
+package com.edohan.fuse.service.impl;
 
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.edohan.innoNest.mapper.CommonMapper;
-import com.edohan.innoNest.service.CommonService;
+import com.edohan.fuse.mapper.CommonMapper;
+import com.edohan.fuse.service.CommonService;
 
 @Service("CommonService")
 public class CommonServiceImpl implements CommonService {

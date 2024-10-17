@@ -1,4 +1,4 @@
-package com.edohan.innoNest.mapper;
+package com.edohan.fuse.mapper;
 
 import java.util.*;
 

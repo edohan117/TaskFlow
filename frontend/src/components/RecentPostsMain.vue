@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <section class="room-list">
     <h2 class="section-title">RecentPostsMain</h2>
     <div class="slider-container">
@@ -20,21 +19,6 @@
                 <span v-if="index === 2" class="ranking-icon">
                   <i class="bi bi-trophy-fill" style="color: #cd7f32;"></i> <!-- 3위 아이콘 -->
                 </span>
-=======
-  <section class="idea-list">
-    <h3>Recent Posts</h3>
-    <div class="idea-grid">
-      <router-link v-for="idea in recentPosts" :key="idea.ID" :to="{ name: 'IdeaDetail', params: { id: idea.ID } }"
-        class="idea-card-link">
-        <article class="idea-card">
-          <h3 class="idea-title">{{ idea.TITLE }}</h3>
-          <p class="idea-content">{{ truncateText(idea.CONTENT, 80) }}</p>
-          <div class="idea-meta">
-            <div class="idea-author">
-              <span>{{ idea.WRITER }}</span>
-              <div class="idea-tags">
-                <span v-for="tag in parseTags(idea.TAGS)" :key="tag" class="tag">{{ tag }}</span>
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
               </div>
             </div>
             <div class="room-info">
@@ -45,16 +29,10 @@
                 <span class="meta-item"><i class="fas fa-clock"></i> {{ room.RUN_TIME }}분</span>
               </div>
             </div>
-<<<<<<< HEAD
           </router-link>
         </div>
       </div>
       <button class="slider-button next" @click="nextSlide" :disabled="currentIndex === maxIndex">&gt;</button>
-=======
-          </div>
-        </article>
-      </router-link>
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
     </div>
   </section>
 </template>
@@ -121,7 +99,6 @@ export default {
 
 
 <style scoped>
-<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
 .room-list {
@@ -131,50 +108,6 @@ export default {
 
 .section-title {
   font-size: 2.5rem;
-=======
-.idea-list {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-h3 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.idea-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.idea-card-link {
-  text-decoration: none;
-}
-
-.idea-card {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* Hover effect for cards */
-.idea-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
-}
-
-/* Title styling */
-.idea-title {
-  font-size: 1.4rem;
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
   color: #2c3e50;
   text-align: center;
   font-weight: 700;
@@ -257,18 +190,9 @@ h3 {
   color: #34495e;
   margin-bottom: 1rem;
   line-height: 1.6;
-<<<<<<< HEAD
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-=======
-  white-space: pre-wrap;
-  /* 줄바꿈과 연속 공백을 그대로 유지 */
-  overflow: hidden;
-  /* 넘치는 텍스트 숨기기 */
-  text-overflow: ellipsis;
-  /* 잘린 텍스트에 말줄임표 표시 */
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
 }
 
 .room-meta {

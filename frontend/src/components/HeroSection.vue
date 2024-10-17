@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <section class="hero" :style="{ backgroundImage: 'url(' + slides[currentSlide].background + ')' }">
     <div class="arrow left" @click="prevSlide">&#10094;</div>
     <div v-for="(slide, index) in slides" :key="index" v-show="currentSlide === index" class="slide">
@@ -8,12 +7,6 @@
       <a href="#" @click.prevent="checkLoginAndNavigate(slide.buttonLink)" class="cta-button">{{ slide.buttonText }}</a>
     </div>
     <div class="arrow right" @click="nextSlide">&#10095;</div>
-=======
-  <section class="hero">
-    <h2>Promote Your Website Here</h2>
-    <p>Share your website and connect with an audience eager to see what you have to offer.</p>
-    <a href="#" @click.prevent="checkLoginAndNavigate('/ideaSubmit')" class="cta-button">Start Promoting</a>
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
   </section>
 </template>
 
@@ -89,7 +82,6 @@ export default {
 <style scoped>
 .hero {
   position: relative;
-<<<<<<< HEAD
   background-size: cover; /* 배경 이미지 크기를 섹션에 맞춤 */
   background-position: center;
   background-repeat: no-repeat;
@@ -97,23 +89,10 @@ export default {
   height: 60vh; /* 섹션 높이를 60%로 설정 */
   color: #fff;
   text-align: center;
-=======
-  background-image: url('@/assets/heroBack.jpg');
-  /* 경로가 올바른지 확인 */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: #fff;
-  text-align: center;
-  padding: 5rem 3rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
   border-radius: 20px; /* 배경을 둥글게 만들기 */
   overflow: hidden; /* 둥글게 만든 부분 외의 영역 숨기기 */
   transition: background-image 1s ease;
@@ -140,41 +119,6 @@ h2 {
 p {
   font-size: 1.1rem; /* 본문 크기를 약간 키움 */
   margin-bottom: 2rem;
-=======
-  overflow: hidden;
-  /* 가상 요소의 경계를 설정 */
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* 반투명 검은색 오버레이 */
-  z-index: 1;
-  /* 오버레이가 배경보다 위에 오도록 설정 */
-}
-
-h2 {
-  font-size: 3rem;
-}
-
-p {
-  font-size: 1.5rem;
-}
-
-h2,
-p,
-.cta-button {
-  position: relative;
-  /* 텍스트가 오버레이 위에 오도록 설정 */
-  z-index: 2;
-  text-shadow: 3px 3px 6px rgba(255, 215, 0, 0.9);
-  /* 노란색 그림자 */
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
 }
 
 .cta-button {
@@ -197,7 +141,6 @@ p,
   color: #fff;
 }
 
-<<<<<<< HEAD
 /* 슬라이드 컨트롤 버튼 */
 .arrow {
   position: absolute;
@@ -236,30 +179,11 @@ p,
   .cta-button {
     padding: 0.5rem 1rem; /* 버튼 패딩 조정 */
     font-size: 0.9rem; /* 버튼 글자 크기 조정 */
-=======
-@media (max-width: 768px) {
-  .hero {
-    padding: 4rem 2rem;
-  }
-
-  h2 {
-    font-size: 3rem;
-  }
-
-  p {
-    font-size: 1.3rem;
-  }
-
-  .cta-button {
-    padding: 0.9rem 1.75rem;
-    font-size: 1.1rem;
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
   }
 }
 
 @media (max-width: 480px) {
   .hero {
-<<<<<<< HEAD
     padding: 2rem 1rem;
     height: 40vh; /* 높이 줄이기 */
   }
@@ -275,22 +199,6 @@ p,
   .cta-button {
     padding: 0.5rem 0.75rem; /* 버튼 패딩 조정 */
     font-size: 0.8rem; /* 버튼 글자 크기 조정 */
-=======
-    padding: 3rem 1.5rem;
-  }
-
-  h2 {
-    font-size: 2.5rem;
-  }
-
-  p {
-    font-size: 1.1rem;
-  }
-
-  .cta-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
->>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
   }
 }
 </style>

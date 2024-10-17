@@ -1,10 +1,10 @@
-package com.edohan.innoNest.controller;
+package com.edohan.fuse.controller;
 
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.edohan.innoNest.service.RoomService;
+import com.edohan.fuse.service.RoomService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
