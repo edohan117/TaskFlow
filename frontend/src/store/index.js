@@ -10,26 +10,29 @@ function parseJSON(value) {
 
 export default createStore({
   state: {
-    user: parseJSON(localStorage.getItem('user')) || null, // Parse JSON safely
-    isAuthenticated: !!localStorage.getItem('user'), // Check if user data exists
-    role: localStorage.getItem('role') || '' // Get role, or default to an empty string
+    user: parseJSON(sessionStorage.getItem('user')) || null,
+    isAuthenticated: !!sessionStorage.getItem('user'),
+    role: sessionStorage.getItem('role') || ''
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
       state.isAuthenticated = !!user;
-      localStorage.setItem('user', JSON.stringify(user)); // Store user data safely
+      sessionStorage.setItem('user', JSON.stringify(user));
     },
     SET_ROLE(state, role) {
       state.role = role;
-      localStorage.setItem('role', role); // Store role in localStorage
+      sessionStorage.setItem('role', role);
     },
     LOGOUT(state) {
+      console.log('Logging out...');
       state.user = null;
       state.isAuthenticated = false;
       state.role = '';
-      localStorage.removeItem('user'); // Remove user data from localStorage
-      localStorage.removeItem('role'); // Remove role data from localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('role');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('role');
     }
   },
   actions: {
@@ -49,7 +52,7 @@ export default createStore({
       return state.user;
     },
     role(state) {
-      return state.role; // Return the user's role
+      return state.role;
     }
   }
 });

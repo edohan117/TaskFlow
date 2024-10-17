@@ -18,11 +18,10 @@ public class MainController {
 
     @GetMapping("/list")
     public Map<String, Object> list() {
-        // 예제 데이터 생성
+
         List<Map<String, Object>> highViewCount = service.highViewCountSelect();
         List<Map<String, Object>> recentPosts = service.recentPostsSelect();
         List<Map<String, Object>> topLikedPosts = service.topLikedPostsSelect();
-        
 
         return Map.of(
             "highViewCount", highViewCount,

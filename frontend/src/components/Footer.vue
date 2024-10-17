@@ -18,7 +18,7 @@
       <div class="footer-section social">
         <h3>소셜 미디어</h3>
         <div class="social-icons">
-          <a href="https://www.instagram.com/lumiere_edohan/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/inno_nest_dohan/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
             <i class="bi bi-instagram"></i>
           </a>
           <a href="https://twitter.com/" aria-label="Twitter" target="_blank" rel="noopener noreferrer">

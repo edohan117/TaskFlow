@@ -26,11 +26,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Map<String, Object> authenticate(String id, String password) {
-        String storedPassword = mapper.getPasswordByUsername(id);
+    public Map<String, Object> login(String userId, String password) {
+        String storedPassword = mapper.getPassword(userId);
         if (password.equals(storedPassword)) {
-            String username = mapper.getUsernameById(id);
-            String role = mapper.getRoleById(id);
+            String username = mapper.getUserNm(userId);
+            String role = mapper.getRole(userId);
 
             return Map.of(
                 "status", "success",
@@ -50,7 +50,14 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Object> getProfile(String id) {
-        return mapper.getProfileById(id);
+    public Map<String, Object> getProfile(String userId) {
+        return mapper.getProfile(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean checkIdExists(String id) {
+        Integer count = mapper.checkIdExists(id);
+    return count != null && count > 0;
     }
 }

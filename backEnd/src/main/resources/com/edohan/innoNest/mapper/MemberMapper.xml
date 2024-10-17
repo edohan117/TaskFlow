@@ -4,9 +4,8 @@
 
     <!-- Member list -->
     <select id="memberList" resultType="java.util.Map">
-        SELECT ID,
-                USERNAME,
-                PASSWORD,
+        SELECT USER_ID,
+                USER_NM,
                 PHONE,
                 EMAIL,
                 ROLE,
@@ -19,62 +18,88 @@
     <insert id="insertMember" parameterType="java.util.Map">
         INSERT INTO 
         TB_MEMBER 
-            (ID,
-            USERNAME,
+            (USER_ID,
+            USER_NM,
             PASSWORD,
-            EMAIL,
             PHONE,
+            EMAIL,
+            BIRTH,
             ROLE,
+            SOCIAL_LINKS,
+            POST_CODE,
+            ROAD_ADDRESS,
+            JIBUN_ADDRESS,
+            DETAIL_ADDRESS,
+            EXTRA_ADDRESS,
             CREATEDATE,
             UPDATEDATE)
         VALUES 
-            (#{id},
-            #{username},
+            (#{userId},
+            #{userNm},
             #{password},
-            #{email},
             #{phone},
+            #{email},
+            #{birth},
             'USER',
-            CURRENT_TIMESTAMP,
-            CURRENT_TIMESTAMP)
+            #{socialLinks},
+            #{postCode},
+            #{roadAddress},
+            #{jibunAddress},
+            #{detailAddress},
+            #{extraAddress},
+            NOW(),
+            NOW())
     </insert>
 
     <!-- 사용자 비밀번호 조회 -->
-    <select id="getPasswordByUsername" parameterType="java.lang.String" resultType="java.lang.String">
+    <select id="getPassword" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT PASSWORD
         FROM TB_MEMBER
-        WHERE ID = #{id}
+        WHERE USER_ID = #{userId}
     </select>
 
     <!-- 사용자 이름 조회 -->
-    <select id="getUsernameById" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT USERNAME
+    <select id="getUserNm" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT USER_NM
         FROM TB_MEMBER
-        WHERE ID = #{id}
+        WHERE USER_ID = #{userId}
     </select>
 
     <!-- 사용자 권한 조회 -->
-    <select id="getRoleById" parameterType="java.lang.String" resultType="java.lang.String">
+    <select id="getRole" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT ROLE
         FROM TB_MEMBER
-        WHERE ID = #{id}
+        WHERE USER_ID = #{userId}
     </select>
     
-    <select id="getProfileById" parameterType="java.lang.String" resultType="java.util.Map">
+    <select id="getProfile" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT 
-            ID,
-            USERNAME,
-            EMAIL,
+            USER_ID,
+            USER_NM,
+            PASSWORD,
             PHONE,
+            EMAIL,
+            BIRTH,
             ROLE,
             PROFILE_PICTURE,
             BIO,
             SOCIAL_LINKS,
-            LOCATION,
+            POST_CODE,
+            ROAD_ADDRESS,
+            JIBUN_ADDRESS,
+            DETAIL_ADDRESS,
+            EXTRA_ADDRESS,
             CREATEDATE,
             UPDATEDATE
         FROM 
             TB_MEMBER
         WHERE 
-            ID = #{id}
+            USER_ID = #{userId}
+    </select>
+
+    <select id="checkIdExists" parameterType="map" resultType="Integer">
+        SELECT COUNT(*)
+        FROM TB_MEMBER
+        WHERE USER_ID = #{id}
     </select>
 </mapper>

@@ -2,13 +2,14 @@
   <header :class="['header', { 'scrolled': isScrolled }]">
     <div class="container">
       <div class="logo">
-        <router-link to="/" class="logo-link">InnoNest</router-link>
+        <router-link to="/" class="logo-link">Fuse ESCAPE</router-link>
       </div>
       <nav class="nav">
-        <router-link to="/ideaList" class="nav-link">List</router-link>
-        <a href="#" @click.prevent="checkLoginAndNavigate('/ideaSubmit')" class="nav-link">Submit</a>
-        <router-link to="/challengeList" class="nav-link">Challenge</router-link>
-        <router-link to="/noticeList" class="nav-link">Notice</router-link>
+        <router-link to="/newThemeList" class="nav-link">신규테마</router-link>
+        <router-link to="/rcmdThemeList" class="nav-link">추천테마</router-link>
+        <router-link to="/roomList" class="nav-link">LIST♤</router-link>
+        <router-link to="/roomRank" class="nav-link">RANK♧</router-link>
+        <router-link to="/noticeList" class="nav-link">공지사항</router-link>
         <div v-if="roleAdmin">
         </div>
       </nav>
@@ -17,14 +18,12 @@
           <span class="sessionId">{{ user.username }} 님</span>
           <div v-if="profileMenuOpen" class="profile-menu">
             <router-link to="/myProfile" @click="closeMenu" class="profile-menu-link">Profile</router-link>
-            <router-link to="/myIdea" @click="closeMenu" class="profile-menu-link">My Idea</router-link>
-            <router-link to="/mySettings" @click="closeMenu" class="profile-menu-link">Settings</router-link>
-            <router-link v-if="role === 'ADMIN'" to="/memberList" class="profile-menu-link">Member</router-link>
-            <router-link v-if="role === 'ADMIN'" to="/adminPage" class="profile-menu-link">ADMIN</router-link>
+            <router-link to="/myLikes" @click="closeMenu" class="profile-menu-link">MyLikes</router-link>
+            <router-link to="/myRecords" @click="closeMenu" class="profile-menu-link">MyRecords</router-link>
+            <router-link v-if="roleAdmin" to="/memberList" class="profile-menu-link">Member</router-link>
           </div>
         </div>
         <button v-if="!isLoggedIn" @click="goToLogin" class="btn btn-login">Login</button>
-        <!-- Remove the second @click from the Logout button -->
         <button v-else @click="logoutAndCloseMenu" class="btn btn-logout">Logout</button>
       </div>
       <button class="menu-toggle" @click="toggleMenu" aria-label="Toggle menu" :aria-expanded="isMenuOpen">
@@ -32,9 +31,13 @@
       </button>
     </div>
     <div class="mobile-menu" :class="{ 'is-active': isMenuOpen }">
-      <router-link to="/ideaList" class="mobile-nav-link" @click="closeMenu">List</router-link>
-      <a href="#" @click.prevent="checkLoginAndNavigate('/ideaSubmit')" class="mobile-nav-link">Submit</a>
-      <router-link to="/noticeList" class="mobile-nav-link" @click="closeMenu">Notice</router-link>
+      <router-link to="/newThemeList" class="mobile-nav-link" @click="closeMenu">신규테마</router-link>
+      <router-link to="/rcmdThemeList" class="mobile-nav-link" @click="closeMenu">추천테마</router-link>
+      <router-link to="/roomList" class="mobile-nav-link" @click="closeMenu">LIST♤</router-link>
+      <router-link to="/roomRank" class="mobile-nav-link" @click="closeMenu">RANK♧</router-link>
+      <router-link to="/noticeList" class="mobile-nav-link" @click="closeMenu">공지사항</router-link>
+      <router-link to="/myProfile" class="mobile-nav-link" @click="closeMenu">Profile</router-link>
+      <router-link v-if="roleAdmin" to="/memberList" class="mobile-nav-link" @click="closeMenu">Member</router-link>
     </div>
   </header>
 </template>
@@ -90,13 +93,6 @@ export default {
       profileMenuOpen.value = !profileMenuOpen.value;
     };
 
-    const checkLoginAndNavigate = (path) => {
-      if (!isLoggedIn.value) {
-        router.push('/loginForm');
-      } else {
-        router.push(path);
-      }
-    };
 
     const handleScroll = () => {
       isScrolled.value = window.scrollY > 50;
@@ -120,7 +116,6 @@ export default {
       isMenuOpen,
       toggleMenu,
       closeMenu,
-      checkLoginAndNavigate,
       toggleProfileMenu,
       profileMenuOpen,
       isScrolled,

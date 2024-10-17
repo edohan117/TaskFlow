@@ -1,35 +1,45 @@
 <template>
-  <section class="idea-list">
-    <h3>High View Posts</h3>
-    <div class="idea-grid">
-      <router-link v-for="idea in highViewCount" :key="idea.ID" :to="{ name: 'IdeaDetail', params: { id: idea.ID } }"
-        class="idea-card-link">
-        <article class="idea-card">
-          <h3 class="idea-title">{{ idea.TITLE }}</h3>
-          <p class="idea-content">{{ truncateText(idea.CONTENT, 80) }}</p>
-          <div class="idea-meta">
-            <div class="idea-author">
-              <span>{{ idea.WRITER }}</span>
+  <section class="room-list">
+    <h2 class="section-title">HighViewCount</h2>
+    <div class="slider-container">
+      <button class="slider-button prev" @click="prevSlide" :disabled="currentIndex === 0">&lt;</button>
+      <div class="slider-wrapper" :style="{ transform: `translateX(-${currentIndex * slideWidth}%)` }">
+        <div v-for="(room, index) in highViewCount" :key="room.ID" class="room-card">
+          <router-link :to="{ name: 'RoomDetail', params: { id: room.ID } }" class="room-card-link">
+            <div class="room-image-container">
+              <img class="room-image" :src="room.IMG_PATH" :alt="room.THEME_NM" />
+              <div class="room-genre">
+                {{ room.GENRE_NM }}
+                <span v-if="index === 0" class="ranking-icon">
+                  <i class="bi bi-trophy-fill" style="color: gold;"></i> <!-- 1위 아이콘 -->
+                </span>
+                <span v-if="index === 1" class="ranking-icon">
+                  <i class="bi bi-trophy-fill" style="color: silver;"></i> <!-- 2위 아이콘 -->
+                </span>
+                <span v-if="index === 2" class="ranking-icon">
+                  <i class="bi bi-trophy-fill" style="color: #cd7f32;"></i> <!-- 3위 아이콘 -->
+                </span>
+              </div>
             </div>
-            <div class="idea-stats">
-              <span>LIKES {{ idea.LIKE_COUNT }}<i class="bi bi-hand-thumbs-up"></i></span>
-              <span>DISLIKES {{ idea.DISLIKE_COUNT }}<i class="bi bi-hand-thumbs-down"></i></span>
-              <span>VIEW {{ idea.VIEW_COUNT }}</span>
+            <div class="room-info">
+              <h3 class="room-title">{{ room.THEME_NM }} <i class="bi bi-balloon-heart"></i> {{ room.LIKES }}</h3>
+              <p class="room-content">{{ room.ROOM_NM }}</p>
+              <div class="room-meta">
+                <span class="meta-item"><i class="fas fa-users"></i> {{ room.MIN_PARTY }}-{{ room.MAX_PARTY }}명</span>
+                <span class="meta-item"><i class="fas fa-clock"></i> {{ room.RUN_TIME }}분</span>
+              </div>
             </div>
-            <div class="idea-date">
-              <span>{{ formatDate(idea.WRITERDATE) }}</span>
-            </div>
-            <div class="idea-tags">
-              <span v-for="tag in parseTags(idea.TAGS)" :key="tag" class="tag">{{ tag }}</span>
-            </div>
-          </div>
-        </article>
-      </router-link>
+          </router-link>
+        </div>
+      </div>
+      <button class="slider-button next" @click="nextSlide" :disabled="currentIndex === maxIndex">&gt;</button>
     </div>
   </section>
 </template>
 
 <script>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
 export default {
   name: 'HighViewCount',
   props: {
@@ -38,195 +48,215 @@ export default {
       required: true,
     },
   },
-  methods: {
-    formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    },
-    parseTags(tagsString) {
-      return tagsString.split(',').map(tag => tag.trim());
-    },
-    truncateText(text, maxLength) {
-      // 텍스트를 두 줄로 제한
-      let lines = text.split('\n');
-      let truncatedText = '';
+  setup(props) {
+    const currentIndex = ref(0);
+    const slideWidth = ref(20); // 5개씩 보여줄 때는 20%
 
-      // 각 줄을 maxLength로 자르기
-      for (let i = 0; i < lines.length; i++) {
-        if (i < 2) { // 두 줄까지만 처리
-          truncatedText += lines[i].slice(0, maxLength);
-          if (i < 1) truncatedText += '\n'; // 줄바꿈 추가
-        }
+    const maxIndex = computed(() => props.highViewCount.length - Math.floor(100 / slideWidth.value));
+
+    const prevSlide = () => {
+      if (currentIndex.value > 0) {
+        currentIndex.value--;
       }
+    };
 
-      // 텍스트가 자르고 나서도 길면 말줄임표 추가
-      if (text.length > maxLength * 2) {
-        truncatedText += '...';
+    const nextSlide = () => {
+      if (currentIndex.value < maxIndex.value) {
+        currentIndex.value++;
       }
+    };
 
-      return truncatedText;
-    }
-  }
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        slideWidth.value = 100; // 모바일에서는 1개씩
+      } else if (window.innerWidth < 1024) {
+        slideWidth.value = 33.33; // 태블릿에서는 3개씩
+      } else {
+        slideWidth.value = 20; // 데스크톱에서는 5개씩
+      }
+      currentIndex.value = 0; // 리사이즈 시 첫 슬라이드로 리셋
+    };
+
+    onMounted(() => {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
+    });
+
+    return {
+      currentIndex,
+      slideWidth,
+      maxIndex,
+      prevSlide,
+      nextSlide,
+    };
+  },
 };
 </script>
 
 <style scoped>
-/* Container for the idea list */
-.idea-list {
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+.room-list {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* Title styles */
-h3 {
-  font-size: 2rem;
-  /* Increased font size for consistency */
-  color: #333;
-  margin-bottom: 2rem;
-}
-
-/* Flex container for the idea cards */
-.idea-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  /* Gap between cards */
-  justify-content: center;
-}
-
-/* Style for each idea card link */
-.idea-card-link {
-  text-decoration: none;
-  flex: 1 1 300px;
-  /* Allows cards to grow and shrink, with a minimum width of 300px */
-}
-
-/* Style for each idea card */
-.idea-card {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  /* Ensures all cards are the same height */
-}
-
-/* Hover effect for cards */
-.idea-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
-}
-
-/* Title styling */
-.idea-title {
-  font-size: 1.4rem;
+.section-title {
+  font-size: 2.5rem;
   color: #2c3e50;
-  margin-bottom: 0.75rem;
+  text-align: center;
+  font-weight: 700;
 }
 
-.idea-content {
-  font-size: 1rem;
+.slider-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-wrapper {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.room-card {
+  flex: 0 0 20%; /* 5개씩 보여줄 때 */
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.room-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.room-image-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 141.42%; /* 1:√2 Aspect Ratio */
+}
+
+.room-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 컨테이너에 맞게 잘리도록 설정 */
+  background-color: #f0f0f0;
+  transition: transform 0.3s ease;
+}
+
+.room-card:hover .room-image {
+  transform: scale(1.05);
+}
+
+.room-genre {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.ranking-icon {
+  margin-left: 5px;
+}
+
+.room-info {
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 0 0 12px 12px;
+}
+
+.room-title {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.room-content {
+  font-size: 0.9rem;
   color: #34495e;
   margin-bottom: 1rem;
   line-height: 1.6;
-  white-space: pre-wrap; /* 줄바꿈과 연속 공백을 그대로 유지 */
-  overflow: hidden; /* 넘치는 텍스트 숨기기 */
-  text-overflow: ellipsis; /* 잘린 텍스트에 말줄임표 표시 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Meta information styling */
-.idea-meta {
+.room-meta {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  justify-content: space-between;
+  font-size: 0.8rem;
   color: #7f8c8d;
 }
 
-/* Aligning elements within meta section */
-.idea-author,
-.idea-stats,
-.idea-date {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Flex properties for stats */
-.idea-stats {
-  display: flex;
-  justify-content: space-between;
-}
-
-.idea-stats span {
+.meta-item {
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
 
-/* Icon styling */
-i {
-  font-size: 1rem;
-  color: #3498db;
+.meta-item i {
+  font-size: 0.9rem;
 }
 
-/* Pagination styling */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-}
-
-.pagination button {
-  background-color: #3498db;
+.slider-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
+  padding: 10px 15px;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  z-index: 10;
 }
 
-.pagination button:disabled {
-  background-color: #bdc3c7;
+.slider-button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.pagination button:hover:not(:disabled) {
-  background-color: #2980b9;
+.slider-button.prev {
+  left: 10px;
 }
 
-.pagination button.active {
-  background-color: #2980b9;
-  font-weight: bold;
+.slider-button.next {
+  right: 10px;
 }
 
-/* Tags styling */
-.idea-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+@media (max-width: 1024px) {
+  .room-card {
+    flex: 0 0 33.33%; /* 3개씩 보여줄 때 */
+  }
 }
 
-.tag {
-  background-color: #3498db;
-  color: #fff;
-  border-radius: 12px;
-  padding: 0.3rem 0.6rem;
-  font-size: 0.8rem;
-  white-space: nowrap;
-}
-
-.tag:hover {
-  background-color: #2980b9;
+@media (max-width: 768px) {
+  .room-card {
+    flex: 0 0 100%; /* 1개씩 보여줄 때 */
+  }
+  
+  .room-title {
+    font-size: 1rem;
+  }
+  
+  .room-content {
+    font-size: 0.8rem;
+  }
+  
+  .room-meta {
+    font-size: 0.7rem;
+  }
 }
 </style>

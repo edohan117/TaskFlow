@@ -1,44 +1,42 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import LoginForm from '@/views/LoginPage.vue';
-import IdeaSubmit from '@/views/IdeaSubmit.vue';
-import IdeaList from '@/views/IdeaList.vue';
-import IdeaDetail from '@/views/IdeaDetail.vue';
-import IdeaEdit from '@/views/IdeaEdit.vue';
+import RoomList from '@/views/RoomList.vue';
+import MyLikes from '@/views/MyLikes.vue';
+import MyRecords from '@/views/MyRecords.vue';
+import RoomSubmit from '@/views/RoomSubmit.vue';
+import RoomDetail from '@/views/RoomDetail.vue';
+import RoomEdit from '@/views/RoomEdit.vue';
+import NewThemeList from '@/views/NewThemeList.vue';
+import RcmdThemeList from '@/views/RcmdThemeList.vue';
+import RoomRank from '@/views/RoomRank.vue';
 import NoticeList from '@/views/NoticeList.vue';
 import NoticeDetail from '@/views/NoticeDetail.vue';
 import NoticeEdit from '@/views/NoticeEdit.vue';
 import NoticeCreate from '@/views/NoticeCreate.vue';
 import Register from '@/views/RegisterPage.vue';
 import MemberList from '@/views/MemberList.vue';
-import ChallengeList from '@/views/ChallengeList.vue';
-import ChallengeDetail from '@/views/ChallengeDetail.vue';
-import ChallengeSubmit from '@/views/ChallengeSubmit.vue';
-import ChallengeEdit from '@/views/ChallengeEdit.vue';
 import MyProfile from '@/views/MyProfile.vue';
-import MyIdea from '@/views/MyIdea.vue';
-import MySettings from '@/views/MySettings.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/loginForm', name: 'LoginForm', component: LoginForm },
-  { path: '/ideaSubmit', name: 'IdeaSubmit', component: IdeaSubmit },
-  { path: '/ideaList', name: 'IdeaList', component: IdeaList },
-  { path: '/ideaDetail/:id', name: 'IdeaDetail', component: IdeaDetail },
-  { path: '/ideaEdit/:id', name: 'IdeaEdit', component: IdeaEdit },
-  { path: '/noticeList', name: 'NoticeList', component: NoticeList },
-  { path: '/noticeDetail/:id', name: 'NoticeDetail', component: NoticeDetail },
-  { path: '/noticeEdit/:id', name: 'NoticeEdit', component: NoticeEdit },
-  { path: '/noticeCreate', name: 'NoticeCreate', component: NoticeCreate },
-  { path: '/register', name: 'Register', component: Register, meta: { requiresAuth: true, admin: true } },
-  { path: '/memberList', name: 'MemberList', component: MemberList, meta: { requiresAuth: true, admin: true } },
-  { path: '/challengeList', name: 'ChallengeList', component: ChallengeList },
-  { path: '/challengeDetail/:id', name: 'ChallengeDetail', component: ChallengeDetail },
-  { path: '/challengeSubmit', name: 'ChallengeSubmit', component: ChallengeSubmit },
-  { path: '/challengeEdit/:id', name: 'ChallengeEdit', component: ChallengeEdit },
-  { path: '/myProfile', name: 'MyProfile', component: MyProfile },
-  { path: '/myIdea', name: 'MyIdea', component: MyIdea },
-  { path: '/mySettings', name: 'MySettings', component: MySettings },
+  { path: '/', name: 'Home', component: Home, meta: { title: '홈' } },
+  { path: '/loginForm', name: 'LoginForm', component: LoginForm, meta: { title: '로그인' } },
+  { path: '/roomList', name: 'RoomList', component: RoomList, meta: { title: '방탈출 목록' } },
+  { path: '/myLikes', name: 'MyLikes', component: MyLikes, meta: { title: '나의 좋아요' } },
+  { path: '/myRecords', name: 'MyRecords', component: MyRecords, meta: { title: '나의 기록' } },
+  { path: '/roomSubmit', name: 'RoomSubmit', component: RoomSubmit, meta: { requiresAuth: true, admin: true, title: '방탈출 정보 등록' } },
+  { path: '/roomDetail/:id', name: 'RoomDetail', component: RoomDetail, meta: { title: '방탈출 상세 정보' } },
+  { path: '/roomEdit/:id', name: 'RoomEdit', component: RoomEdit, meta: { requiresAuth: true, admin: true, title: '방탈출 정보 수정' } },
+  { path: '/roomRank', name: 'RoomRank', component: RoomRank, meta: { title: '방탈출 평점 순위' } },
+  { path: '/newThemeList', name: 'NewThemeList', component: NewThemeList, meta: { title: '새로운 테마 목록' } },
+  { path: '/rcmdThemeList', name: 'RcmdThemeList', component: RcmdThemeList, meta: { title: '추천 테마 목록' } },
+  { path: '/noticeList', name: 'NoticeList', component: NoticeList, meta: { title: '공지 목록' } },
+  { path: '/noticeDetail/:id', name: 'NoticeDetail', component: NoticeDetail, meta: { title: '공지 상세 정보' } },
+  { path: '/noticeEdit/:id', name: 'NoticeEdit', component: NoticeEdit, meta: { requiresAuth: true, admin: true, title: '공지 수정' } },
+  { path: '/noticeCreate', name: 'NoticeCreate', component: NoticeCreate, meta: { requiresAuth: true, admin: true, title: '공지 등록' } },
+  { path: '/register', name: 'Register', component: Register, meta: { title: '회원가입' } },
+  { path: '/memberList', name: 'MemberList', component: MemberList, meta: { requiresAuth: true, admin: true, title: '회원 목록' } },
+  { path: '/myProfile', name: 'MyProfile', component: MyProfile, meta: { title: '내 프로필' } },
 ];
 
 const router = createRouter({
@@ -59,4 +57,10 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+// 페이지 제목 설정
+router.afterEach((to) => {
+  document.title = to.meta.title || '기본 제목'; // 기본 제목을 설정
+});
+
 export default router;

@@ -24,7 +24,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50vh;
+    height: auto;
 }
 </style>
   

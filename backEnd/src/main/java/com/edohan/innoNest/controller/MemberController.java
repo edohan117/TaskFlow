@@ -28,12 +28,12 @@ public class MemberController {
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Map<String, String> loginRequest, HttpSession session) {
-        String id = loginRequest.get("id");
+        String userId = loginRequest.get("id");
         String password = loginRequest.get("password");
-        Map<String, Object> response = service.authenticate(id, password);
+        Map<String, Object> response = service.login(userId, password);
 
         if ("success".equals(response.get("status"))) {
-            session.setAttribute("id", id);
+            session.setAttribute("id", userId);
             session.setAttribute("username", response.get("username"));
             session.setAttribute("role", response.get("role")); // 사용자 권한 저장
         }
@@ -43,10 +43,19 @@ public class MemberController {
 
     @GetMapping("/profile")
     public Map<String, Object> getProfile(HttpSession session) {
-        String id = (String) session.getAttribute("id");
-        if (id == null) {
+        String userId = (String) session.getAttribute("id");
+        if (userId == null) {
             return Collections.singletonMap("status", "error");
         }
-        return service.getProfile(id);
+        return service.getProfile(userId);
+    }
+
+    @PostMapping("/check-id")
+    public Map<String, Object> checkId(@RequestBody Map<String, String> request) {
+        String id = request.get("id");
+        boolean result = service.checkIdExists(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("available", !result);
+        return response;
     }
 }

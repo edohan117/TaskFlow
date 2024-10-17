@@ -3,6 +3,10 @@
     <h2>Login</h2>
     <input v-model="id" type="text" placeholder="Id" />
     <input v-model="password" type="password" placeholder="Password" @keydown.enter="handleEnter" />
+    <div class="input-group">
+      <input type="checkbox" id="rememberMe" v-model="rememberMe" />
+      <label for="rememberMe">로그인 유지하기</label>
+    </div>
     <button ref="loginButton" @click="login">Login</button>
     <button @click="goToRegister" class="sign-up-button">Sign Up</button>
   </div>
@@ -20,6 +24,7 @@ export default {
     const store = useStore();
     const id = ref('');
     const password = ref('');
+    const rememberMe = ref(false); // 로그인 유지하기 체크박스
 
     const login = async () => {
       if (id.value && password.value) {
@@ -35,10 +40,11 @@ export default {
             };
             const role = response.data.role;
 
-            // localStorage에 저장
-            localStorage.setItem('id', id.value);
-            localStorage.setItem('username', response.data.username);
-            localStorage.setItem('role', role);
+            // 사용자가 로그인 유지하기를 선택한 경우에만 localStorage에 저장
+            if (rememberMe.value) {
+              localStorage.setItem('user', JSON.stringify(user));
+              localStorage.setItem('role', role);
+            }
 
             // Vuex에 로그인 상태 저장
             store.dispatch('login', { user, role });
@@ -70,6 +76,7 @@ export default {
     return {
       id,
       password,
+      rememberMe,
       login,
       goToRegister,
       handleEnter,
@@ -77,6 +84,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 .login-form {
@@ -113,5 +121,10 @@ export default {
 
 .sign-up-button:hover {
   background-color: #0056b3;
+}
+
+.input-group {
+  gap: 10px;
+  margin-bottom: 10px;
 }
 </style>

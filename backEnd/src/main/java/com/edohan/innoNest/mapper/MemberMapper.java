@@ -6,14 +6,15 @@ public interface MemberMapper {
 
     void insertMember(Map<String, String> member);
 
-    String getPasswordByUsername(String id);
+    String getPassword(String userId);
 
-    String getUsernameById(String id);
+    String getUserNm(String userId);
 
-    String getRoleById(String id);
+    String getRole(String userId);
 
     List<Map<String, Object>> memberList();
 
-    // 사용자 프로필 정보 조회
-    Map<String, Object> getProfileById(String id);
+    Map<String, Object> getProfile(String userId);
+    
+    Integer checkIdExists(String id);
 }
