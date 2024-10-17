@@ -2,7 +2,11 @@
   <header :class="['header', { 'scrolled': isScrolled }]">
     <div class="container">
       <div class="logo">
+<<<<<<< HEAD
         <router-link to="/" class="logo-link">Fuse ESCAPE</router-link>
+=======
+        <router-link to="/" class="logo-link">Fuse</router-link>
+>>>>>>> 9705c99a777ac519ab2dfe017cf963778d9366a2
       </div>
       <nav class="nav">
         <router-link to="/newThemeList" class="nav-link">신규테마</router-link>
@@ -202,7 +206,8 @@ export default {
   text-decoration: none;
   display: block;
   padding: 0.5rem 1rem;
-  white-space: nowrap; /* 이 속성을 추가하여 텍스트가 한 줄에 나오도록 강제합니다 */
+  white-space: nowrap;
+  /* 이 속성을 추가하여 텍스트가 한 줄에 나오도록 강제합니다 */
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -320,8 +325,10 @@ export default {
 }
 
 .auth .sessionId {
-  white-space: nowrap; /* 사용자 이름도 두 줄로 나오지 않게 설정 */
-  overflow: hidden; /* 텍스트가 컨테이너를 넘지 않도록 설정 */
-  text-overflow: ellipsis; /* 필요 시 말줄임표 표시 */
-}
-</style>
+  white-space: nowrap;
+  /* 사용자 이름도 두 줄로 나오지 않게 설정 */
+  overflow: hidden;
+  /* 텍스트가 컨테이너를 넘지 않도록 설정 */
+  text-overflow: ellipsis;
+  /* 필요 시 말줄임표 표시 */
+}</style>
