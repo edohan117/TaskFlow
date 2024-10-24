@@ -38,6 +38,7 @@ export default {
               id: id.value,
               username: response.data.username,
               nickname: response.data.nickname,
+              email: response.data.email,
             };
             const role = response.data.role;
 

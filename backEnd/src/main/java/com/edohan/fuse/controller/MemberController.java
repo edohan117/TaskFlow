@@ -61,6 +61,7 @@ public class MemberController {
                 session.setAttribute("id", userId);
                 session.setAttribute("username", response.get("username"));
                 session.setAttribute("nickname", response.get("nickname"));
+                session.setAttribute("email", response.get("email"));
                 session.setAttribute("role", response.get("role")); // 사용자 권한 저장
             }
     

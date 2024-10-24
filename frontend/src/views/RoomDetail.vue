@@ -10,6 +10,11 @@
               <i class="bi bi-balloon-heart" :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
             </button>
             {{ room.LIKES }}
+            <div class="share-buttons">
+              <button @click="shareOnFacebook" class="btn btn-primary">Facebook 공유</button>
+              <button @click="shareOnTwitter" class="btn btn-primary">Twitter 공유</button>
+              <button @click="copyLink" class="btn btn-primary">링크 복사</button>
+            </div>
           </h1>
         </div>
         <p>{{ room.ROOM_NM }}</p>
@@ -43,7 +48,7 @@
       </div>
 
       <div class="room-content">
-        <h2>방 설명</h2>
+        <h2>ESCAPE 설명</h2>
         <p>{{ room.CONTENT }}</p>
       </div>
 
@@ -86,7 +91,7 @@
 
       <div class="form-group">
         <label>성공 여부</label>
-        <select v-model="success" class="form-control">
+        <select v-model="successFlag" class="form-control">
           <option value="Y">성공</option>
           <option value="N">실패</option>
         </select>
@@ -123,8 +128,8 @@
       <div class="form-group">
           <label>남은 시간</label>
           <TimerInput 
-            :initialMinutes="remainingMinutes"
-            :initialSeconds="remainingSeconds"
+            :initialMinutes="leftMinutes"
+            :initialSeconds="leftSeconds"
             @change="handleTimeChange"
           />
       </div>
@@ -148,7 +153,7 @@
           <p>{{ review.content }}</p>
         </div>
         <div class="review-footer">
-          <span class="review-info">성공 여부: {{ review.success === 'Y' ? '성공' : '실패' }}</span>
+          <span class="review-info">성공 여부: {{ review.successFlag === 'Y' ? '성공' : '실패' }}</span>
           <span class="review-info">난이도: {{ getDifficultyLabel(review.difficulty) }}</span>
           <span class="review-info">
             평점: 
@@ -156,7 +161,7 @@
               <span v-for="n in 5" :key="n" :class="['star', { filled: n <= review.rating }]">★</span>
             </span>
           </span>
-          <span class="review-info">남은 시간: {{ review.remainingTime }}</span>
+          <span class="review-info">남은 시간: {{ review.leftTime }}</span>
         </div>
       </div>
     </div>
@@ -205,12 +210,12 @@ export default {
     const reviews = ref([]);
     const newReview = ref('');
     const playDate = ref(new Date().toISOString().split('T')[0]); // Set default to today's date
-    const success = ref('Y');
+    const successFlag = ref('Y');
     const difficulty = ref(1);
     const rating = ref(1);
     const isModalVisible = ref(false);
-    const remainingMinutes = ref(0); // 기본값 0으로 설정
-    const remainingSeconds = ref(0); // 기본값 0으로 설정
+    const leftMinutes = ref(0); // 기본값 0으로 설정
+    const leftSeconds = ref(0); // 기본값 0으로 설정
     
     const fetchRoomDetail = async () => {
       const roomId = route.params.id;
@@ -253,34 +258,47 @@ export default {
     };
 
     const submitReview = async () => {
-  const roomId = route.params.id;
-  const userId = user.value?.id;
-  try {
-    await axios.post(`/api/room/review/${roomId}`, {
-      userId,
-      content: newReview.value,
-      playDate: playDate.value,
-      success: success.value,
-      difficulty: difficulty.value,
-      rating: rating.value,
-      remainingTime: `${String(remainingMinutes.value).padStart(2, '0')}:${String(remainingSeconds.value).padStart(2, '0')}`, // mm:ss 형식으로 포맷
-    });
-    newReview.value = '';
-    playDate.value = new Date().toISOString().split('T')[0]; // Reset to today's date
-    success.value = 'Y';
-    difficulty.value = 1; // 초기화
-    rating.value = 1; // 초기화
-    remainingMinutes.value = 0; // 초기화
-    remainingSeconds.value = 0; // 초기화
-    await fetchRoomDetail();
-    closeModal();
-  } catch (error) {
-    console.error('리뷰 제출 중 오류 발생:', error);
-  }
-};
+      const roomId = route.params.id;
+      const userId = user.value?.id;
+      const data = {roomId : roomId, userId : userId,
+        content: newReview.value,
+          playDate: playDate.value,
+          successFlag: successFlag.value,
+          difficulty: difficulty.value,
+          rating: rating.value,
+          leftTime: `${String(leftMinutes.value).padStart(2, '0')}:${String(leftSeconds.value).padStart(2, '0')}`, // mm:ss 형식으로 포맷
+      };
+      console.log(data);
+      // try {
+      //   await axios.post(`/api/room/review/${roomId}`, {
+      //     userId,
+      //     content: newReview.value,
+      //     playDate: playDate.value,
+      //     successFlag: successFlag.value,
+      //     difficulty: difficulty.value,
+      //     rating: rating.value,
+      //     leftTime: `${String(leftMinutes.value).padStart(2, '0')}:${String(leftSeconds.value).padStart(2, '0')}`, // mm:ss 형식으로 포맷
+      //   });
+      //   newReview.value = '';
+      //   playDate.value = new Date().toISOString().split('T')[0]; // Reset to today's date
+      //   successFlag.value = 'Y';
+      //   difficulty.value = 1; // 초기화
+      //   rating.value = 1; // 초기화
+      //   leftMinutes.value = 0; // 초기화
+      //   leftSeconds.value = 0; // 초기화
+      //   await fetchRoomDetail();
+      //   closeModal();
+      // } catch (error) {
+      //   console.error('리뷰 제출 중 오류 발생:', error);
+      // }
+    };
 
 
     const openModal = () => {
+      if (!user.value) {
+        alert('로그인 이후에 이용 가능합니다.');
+        return;
+      }
       isModalVisible.value = true;
     };
 
@@ -289,8 +307,8 @@ export default {
     };
 
     const handleTimeChange = ({ minutes, seconds }) => {
-      remainingMinutes.value = minutes;
-      remainingSeconds.value = seconds;
+      leftMinutes.value = minutes;
+      leftSeconds.value = seconds;
     };
     
     const goToEditPage = () => {
@@ -374,7 +392,7 @@ export default {
       reviews,
       newReview,
       playDate,
-      success,
+      successFlag,
       difficulty,
       rating,
       toggleLike,
@@ -391,8 +409,8 @@ export default {
       canEditOrDelete,
       getDifficultyLabel,
       formatDate,
-      remainingMinutes,
-      remainingSeconds,
+      leftMinutes,
+      leftSeconds,
       handleTimeChange,
     };
   },
@@ -619,9 +637,6 @@ input[type="date"],
 select,
 textarea {
   max-width: 100%; /* 최대 폭을 100%로 설정 */
-}
-.success-input {
-  margin: 10px 0;
 }
 
 .time-input {
