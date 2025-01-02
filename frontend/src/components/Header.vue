@@ -5,10 +5,10 @@
         <router-link to="/" class="logo-link">Fuse ESCAPE</router-link>
       </div>
       <nav class="nav">
-        <router-link to="/newThemeList" class="nav-link">신규테마</router-link>
-        <router-link to="/rcmdThemeList" class="nav-link">추천테마</router-link>
-        <router-link to="/roomList" class="nav-link">LIST♤</router-link>
-        <router-link to="/roomRank" class="nav-link">RANK♧</router-link>
+        <router-link to="/rcmdThemeList" class="nav-link">추천/신규♤</router-link>
+        <router-link to="/roomList" class="nav-link">LIST◇</router-link>
+        <router-link to="/roomRank" class="nav-link">RANK♡</router-link>
+        <router-link to="/recruitment" class="nav-link">파티원모집♧</router-link>
         <router-link to="/noticeList" class="nav-link">공지사항</router-link>
         <router-link to="/inquiries" class="nav-link">문의하기</router-link>
         <div v-if="roleAdmin">

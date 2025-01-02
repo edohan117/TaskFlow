@@ -40,7 +40,9 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Map<String, Object> getRoomDetail(int id) {
         Map<String, Object> roomDetail = mapper.getRoomDetail(id);
-        
+        List<Map<String, Object>> reviews = mapper.getRoomReviews(id);
+        roomDetail.put("reviews", reviews);
+
         return roomDetail;
     }
     
@@ -97,5 +99,10 @@ public class RoomServiceImpl implements RoomService {
         // 반응 삭제
         mapper.removeLikes(params);
     }
+
+    @Override
+public void saveReview(Map<String, Object> map) {
+    mapper.saveReview(map);
+}
 
 }

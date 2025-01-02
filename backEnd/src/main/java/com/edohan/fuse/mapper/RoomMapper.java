@@ -10,6 +10,7 @@ public interface RoomMapper {
     List<Map<String, Object>> rcmdList();
     List<Map<String, Object>> getRankList();
     Map<String, Object> getRoomDetail(int id);
+    List<Map<String, Object>> getRoomReviews(int roomId);
     void saveRoom(Map<String, Object> map);
     void updateRoom(int id, Map<String, Object> map);
     void deleteRoom(int id);
@@ -17,4 +18,5 @@ public interface RoomMapper {
     Integer checkIfLiked(Map<String, Object> params);
     void addLikes(Map<String, Object> params);  // 반응 추가 또는 업데이트
     void removeLikes(Map<String, Object> params); // 반응 삭제
+    void saveReview(Map<String, Object> params);
 }

@@ -17,4 +17,5 @@ public interface RoomService {
     boolean checkIfLiked(String userId, int id);
     void addLikes(String userId, int roomId);
     void removeLikes(String userId, int roomId);
+    void saveReview(Map<String, Object> map);
 }

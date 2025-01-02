@@ -1,6 +1,16 @@
 <template>
   <section class="room-list">
-    <h2 class="section-title">추천 목록</h2>
+    <!-- 드롭다운 메뉴 -->
+    <div class="dropdown">
+      <button class="dropbtn">{{ selectedOption }}</button>
+      <div class="dropdown-content">
+        <a href="#" @click="changeSelection('추천 목록', 'api/room/rcmdList')">추천 목록</a>
+        <a href="#" @click="changeSelection('신규', 'api/room/newList')">신규</a>
+      </div>
+    </div>
+
+    <h2 class="section-title">{{ selectedOption }}</h2>
+
     <div class="room-grid">
       <router-link v-for="room in paginatedRooms" :key="room.ID" :to="{ name: 'RoomDetail', params: { id: room.ID } }" class="room-card-link">
         <article class="room-card">
@@ -14,6 +24,7 @@
             <div class="room-meta">
               <span class="meta-item"><i class="fas fa-users"></i> {{ room.MIN_PARTY }}-{{ room.MAX_PARTY }}명</span>
               <span class="meta-item"><i class="fas fa-clock"></i> {{ room.RUN_TIME }}분</span>
+              <span class="meta-item"><i class="fas fa-star"></i> 평점 {{ room.RATING }}</span>
             </div>
           </div>
         </article>
@@ -33,7 +44,7 @@ import axios from 'axios';
 import Pagination from '@/components/Pagination.vue';
 
 export default {
-  name: 'NewThemeList',
+  name: 'RoomList',
   components: {
     Pagination,
   },
@@ -41,7 +52,9 @@ export default {
     return {
       rooms: [],
       currentPage: 1,
-      pageSize: 6
+      pageSize: 6,
+      selectedOption: '추천 목록',  // 초기 선택값을 '전체'로 설정
+      apiEndpoint: 'api/room/rcmdList',  // 기본 API 경로
     };
   },
   computed: {
@@ -55,11 +68,11 @@ export default {
     },
   },
   created() {
-    this.fetchNewThemeList();
+    this.fetchRoomList();
   },
   methods: {
-    fetchNewThemeList() {
-      axios.get('api/room/rcmdList')
+    fetchRoomList() {
+      axios.get(this.apiEndpoint)
         .then(response => {
           this.rooms = response.data;
         })
@@ -70,6 +83,12 @@ export default {
     changePage(page) {
       this.currentPage = page;
     },
+    // 드롭다운 선택에 따른 API 경로 및 제목 변경
+    changeSelection(option, endpoint) {
+      this.selectedOption = option;
+      this.apiEndpoint = endpoint;
+      this.fetchRoomList();  // 선택된 항목에 맞는 데이터 새로고침
+    }
   }
 };
 </script>
@@ -191,23 +210,49 @@ export default {
 
 .meta-item i {
   font-size: 1rem;
+} 
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  font-size: 1.2rem;
+  float: right; /* 버튼을 오른쪽으로 배치 */
 }
 
-@media (max-width: 768px) {
-  .room-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-  
-  .room-title {
-    font-size: 1.2rem;
-  }
-  
-  .room-content {
-    font-size: 0.9rem;
-  }
-  
-  .room-meta {
-    font-size: 0.8rem;
-  }
+.dropbtn {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0; /* 드롭다운 메뉴를 버튼의 오른쪽에 표시 */
+  top: 100%; /* 버튼 바로 아래에 표시 */
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
 }
 </style>

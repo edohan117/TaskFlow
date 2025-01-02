@@ -6,69 +6,14 @@
         <div>
           <h1>
             {{ room.THEME_NM }}
-            <button @click="toggleLike" class="btn btn-outline-danger like-button" :class="{ liked: isLiked }">
-              <i class="bi bi-balloon-heart" :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
-            </button>
-            {{ room.LIKES }}
-            <div class="share-buttons">
-              <button @click="copyLink" class="btn btn-primary">링크 복사</button>
-            </div>
           </h1>
         </div>
         <p>{{ room.ROOM_NM }}</p>
         <div class="rating">
+          <span class="stars">
+            <i v-for="n in 5" :key="n" class="fas fa-star" :class="{ 'filled': n <= room.RATING }"></i>
+          </span>
           평점 : {{ room.RATING }}
-        </div>
-      </div>
-    </div>
-
-    <div class="content-container">
-      <div class="meta-info">
-        <div class="info-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>{{ room.REGION_NM }} - {{ room.AREA_NM }}</span>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-users"></i>
-          <span>{{ room.MIN_PARTY }} - {{ room.MAX_PARTY }} 명</span>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-clock"></i>
-          <span>{{ room.RUN_TIME }} 분</span>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-tags"></i>
-          <span>{{ room.GENRE_NM }}</span>
-        </div>
-      </div>
-
-      <div class="room-content">
-        <h2>ESCAPE 설명</h2>
-        <p>{{ room.CONTENT }}</p>
-      </div>
-
-      <div class="additional-info">
-        <div class="info-card">
-          <h3>난이도</h3>
-          <div class="level-indicator">
-            <div v-for="n in 5" :key="n" class="level-bar" :class="getLevelColorClass(n)"></div>
-          </div>
-        </div>
-        <div class="info-card">
-          <h3>활동성</h3>
-          <div class="level-indicator">
-            <div v-for="n in 5" :key="n" class="level-bar" :class="getActivityColorClass(n)"></div>
-          </div>
-        </div>
-        <div class="info-card">
-          <h3>장치비율</h3>
-          <div class="level-indicator">
-            <div v-for="n in 5" :key="n" class="level-bar" :class="getDeviceColorClass(n)"></div>
-          </div>
-        </div>
-        <div class="info-card">
-          <h3>가격</h3>
-          <p>{{ formatPrice(room.PRICE) }} 원</p>
         </div>
       </div>
     </div>
@@ -143,9 +88,6 @@
     </Modal>
 
       <div class="reviews-list">
-        <div v-if="reviews.length === 0" class="no-reviews-message">
-          리뷰가 없습니다. 첫 번째 리뷰를 작성해보세요!
-        </div>
         <div v-for="review in reviews" :key="review.id" class="review-card">
           <div class="review-header">
             <div class="user-info">
@@ -188,12 +130,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div v-if="reviews.length > 3" class="review-more-section">
-        <button v-if="!showAllReviews" @click="showAllReviewsPage" class="btn btn-outline-primary view-more-btn">
-          리뷰 더보기 ({{ reviews.length - displayedReviews.length }}개)
-        </button>
       </div>
     </div>
 
@@ -421,26 +357,11 @@ export default {
     });
 
     const showReviewButton = computed(() => {
-      return !hasUserReview.value;
+      return user.value && !hasUserReview.value;
     });
-
-    const copyLink = () => {
-      const roomId = room.value.ID; // 현재 방의 ID
-      const roomUrl = `${window.location.origin}/roomDetail/${roomId}`; // 방 URL 생성
-
-      navigator.clipboard.writeText(roomUrl)
-        .then(() => {
-          alert('링크가 복사되었습니다!');
-        })
-        .catch(err => {
-          console.error('링크 복사 실패:', err);
-        });
-    };
-
     onMounted(fetchRoomDetail);
 
     return {
-      copyLink,
       showAllReviews,
       displayedReviews,
       showAllReviewsPage,

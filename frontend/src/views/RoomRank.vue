@@ -1,9 +1,20 @@
 <template>
   <section class="rank-list">
     <h2>Theme Rank</h2>
+
+    <!-- 정렬 기준 드롭다운 -->
+    <div class="sort-dropdown">
+      <label for="sortOptions" class="sort-label">정렬 기준:</label>
+      <select id="sortOptions" v-model="sortOption" @change="sortRanks">
+        <option value="rating">평점순</option>
+        <option value="likes">좋아요순</option>
+        <option value="comments">리뷰순</option>
+      </select>
+    </div>
+
     <div class="rank-grid">
       <router-link 
-        v-for="rank in rankList" 
+        v-for="rank in paginatedRanks" 
         :key="rank.ID" 
         :to="{ name: 'RoomDetail', params: { id: rank.ID } }"
         class="rank-card-link"
@@ -18,7 +29,8 @@
           </div>
           <div class="rank-info">
             <h3 class="room-title">{{ rank.THEME_NM }} <i class="bi bi-balloon-heart"></i> {{ rank.LIKES }}</h3>
-              <p class="room-content">{{ rank.ROOM_NM }}</p>
+            <p class="room-content">{{ rank.ROOM_NM }}</p>
+            <p class="room-content">review : {{ rank.COMMENTS }}</p>
             <div class="rank-meta">
               <span class="rank-region"><i class="fas fa-map-marker-alt"></i> {{ rank.REGION_NM }}</span>
               <span class="rank-area"><i class="fas fa-map"></i> {{ rank.AREA_NM }}</span>
@@ -63,37 +75,54 @@ export default {
   },
   data() {
     return {
-      ranks: [],
-      currentPage: 1,
-      pageSize: 5
+      ranks: [], // 모든 rank 목록
+      currentPage: 1, // 현재 페이지
+      pageSize: 5, // 페이지 당 아이템 수 (5개씩 표시)
+      sortOption: 'rating', // 정렬 기준 (기본: 평점순)
     };
   },
   computed: {
+    // 전체 페이지 수 계산 (하지만 4페이지만 보이게 설정)
     totalPages() {
-      return Math.ceil(this.ranks.length / this.pageSize);
+      return Math.min(Math.ceil(this.ranks.length / this.pageSize), 4); // 최대 4페이지까지만 표시
     },
-    rankList() {
+    // 정렬된 목록을 반환
+    sortedRanks() {
+      const sortedRanks = [...this.ranks];
+
+      switch (this.sortOption) {
+        case 'rating':
+          return sortedRanks.sort((a, b) => b.RATING - a.RATING); // 평점순 (내림차순)
+        case 'likes':
+          return sortedRanks.sort((a, b) => b.LIKES - a.LIKES); // 좋아요순 (내림차순)
+        case 'comments':
+          return sortedRanks.sort((a, b) => b.COMMENTS - a.COMMENTS); // 댓글순 (내림차순)
+        default:
+          return sortedRanks;
+      }
+    },
+    // 현재 페이지에 맞는 데이터만 반환 (5개씩 보여줌)
+    paginatedRanks() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      return this.ranks.slice(start, end);
+      return this.sortedRanks.slice(start, end); // 현재 페이지에 맞는 데이터만 반환
     },
+    // 최대 4개 페이지 번호만 표시 (페이징 UI)
     displayedPages() {
-      const range = 2;
+      const range = 2; // 현재 페이지 기준으로 왼쪽, 오른쪽 각각 2개의 페이지 번호만 보이게
       let start = Math.max(1, this.currentPage - range);
       let end = Math.min(this.totalPages, this.currentPage + range);
 
-      if (start > 1) {
-        start = Math.max(1, end - (range * 2));
+      // 페이지 범위가 4개가 되도록 조정
+      if (end - start < 3) {
+        end = Math.min(this.totalPages, start + 3);
       }
-      if (end < this.totalPages) {
-        end = Math.min(this.totalPages, start + (range * 2));
+      if (start > 1) {
+        start = Math.max(1, end - 3);
       }
 
-      return Array.from({length: (end - start + 1)}, (_, i) => start + i);
+      return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     },
-    canEditOrDelete() {
-      return this.role === 'ADMIN';
-    }
   },
   created() {
     this.fetchRankList();
@@ -109,21 +138,27 @@ export default {
     };
   },
   methods: {
+    // API에서 rank 목록을 가져옴 (전체 데이터를 가져옴)
     fetchRankList() {
       axios.get('/api/room/rankList')
         .then(response => {
-          this.ranks = response.data;
+          this.ranks = response.data; // 전체 데이터 저장
         })
         .catch(error => {
           console.error('Error fetching rank list:', error);
         });
     },
+    // 페이지 변경
     changePage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page;
       }
-    }
-  }
+    },
+    // 정렬 기준 변경
+    sortRanks() {
+      this.currentPage = 1; // 정렬 기준 변경 시 첫 페이지로 돌아가기
+    },
+  },
 };
 </script>
 
@@ -133,6 +168,7 @@ export default {
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Arial', sans-serif;
+  position: relative;
 }
 
 h2 {
@@ -142,6 +178,29 @@ h2 {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+.sort-dropdown {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-dropdown select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.sort-label {
+  font-size: 1rem;
+  color: #2c3e50;
 }
 
 .rank-grid {

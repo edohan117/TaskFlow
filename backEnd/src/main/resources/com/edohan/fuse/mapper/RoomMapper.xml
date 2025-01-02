@@ -232,9 +232,8 @@
             , A.RATING
             , A.LEVEL
             , A.IMG_PATH
+            , (SELECT COUNT(*) FROM tb_reviews WHERE THEME_ID = A.ID) AS COMMENTS
         FROM ESCAPE_ROOM_LIST A
-        ORDER BY A.RATING DESC
-        LIMIT 30
     </select>
 
     <insert id="saveRoom" parameterType="map">
@@ -347,4 +346,41 @@
             AND THEME_ID = #{id}
     </select>
 
+    <insert id="saveReview" parameterType="map">
+        INSERT INTO TB_REVIEWS 
+            (USER_ID,
+            THEME_ID,
+            CONTENT,
+            RATING,
+            PLAY_DATE,
+            SUCCESS_FLAG,
+            LEVEL,
+            LEFT_TIME,
+            CREATED_TIME)
+        VALUES 
+            (#{userId},
+            #{themeId},
+            #{content},
+            #{rating},
+            #{playDate},
+            #{successFlag},
+            #{level},
+            #{leftTime},
+            NOW())
+    </insert>
+
+    <select id="getRoomReviews" parameterType="int" resultType="java.util.Map">
+        SELECT USER_ID          AS USER_ID,
+                THEME_ID        AS THEME_ID,
+                CONTENT         AS CONTENT,
+                RATING          AS RATING,
+                PLAY_DATE       AS PLAY_DATE,
+                SUCCESS_FLAG    AS SUCCESS_FLAG,
+                LEVEL           AS LEVEL,
+                LEFT_TIME       AS LEFT_TIME,
+                CREATED_TIME    AS CREATED_TIME
+        FROM TB_REVIEWS
+        WHERE THEME_ID = #{id}
+        ORDER BY CREATED_TIME DESC
+    </select>
 </mapper>

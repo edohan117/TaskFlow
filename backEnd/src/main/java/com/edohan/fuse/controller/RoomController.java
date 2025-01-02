@@ -158,4 +158,21 @@ public class RoomController {
         }
     }
 
+    @PostMapping("/review")
+    public ResponseEntity<String> submitReview(@RequestBody Map<String, Object> review) {
+        Map<String, Object> map = new HashMap<>();
+        
+        map.put("userId", (String) review.get("userId"));
+        map.put("themeId", (String) review.get("roomId"));
+        map.put("content", (String) review.get("content"));
+        map.put("rating", (Integer) review.get("rating"));
+        map.put("playDate", review.get("playDate"));
+        map.put("successFlag", (String) review.get("successFlag"));
+        map.put("level", (Integer) review.get("difficulty"));
+        map.put("leftTime", (String) review.get("leftTime")); // Ensure this matches your database schema
+
+        service.saveReview(map); // You need to implement this in your service layer
+        return ResponseEntity.ok("Review submitted successfully.");
+    }
+
 }
