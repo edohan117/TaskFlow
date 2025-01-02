@@ -52,7 +52,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 30vh;
   font-family: 'Arial', sans-serif;
   color: #333;
   background-color: #f5f5f5;

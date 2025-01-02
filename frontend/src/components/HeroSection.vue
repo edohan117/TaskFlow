@@ -82,19 +82,23 @@ export default {
 <style scoped>
 .hero {
   position: relative;
-  background-size: cover; /* 배경 이미지 크기를 섹션에 맞춤 */
+  background-size: cover;
+  /* 배경 이미지 크기를 섹션에 맞춤 */
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 60vh; /* 섹션 높이를 60%로 설정 */
+  height: 30vh;
+  /* 섹션 높이를 60%로 설정 */
   color: #fff;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 20px; /* 배경을 둥글게 만들기 */
-  overflow: hidden; /* 둥글게 만든 부분 외의 영역 숨기기 */
+  border-radius: 20px;
+  /* 배경을 둥글게 만들기 */
+  overflow: hidden;
+  /* 둥글게 만든 부분 외의 영역 숨기기 */
   transition: background-image 1s ease;
 }
 
@@ -108,16 +112,19 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem; /* 내부 패딩 조정 */
+  padding: 2rem;
+  /* 내부 패딩 조정 */
 }
 
 h2 {
-  font-size: 2.2rem; /* 제목 크기를 약간 키움 */
+  font-size: 2.2rem;
+  /* 제목 크기를 약간 키움 */
   margin-bottom: 1rem;
 }
 
 p {
-  font-size: 1.1rem; /* 본문 크기를 약간 키움 */
+  font-size: 1.1rem;
+  /* 본문 크기를 약간 키움 */
   margin-bottom: 2rem;
 }
 
@@ -149,56 +156,71 @@ p {
   font-size: 2rem;
   color: #fff;
   cursor: pointer;
-  user-select: none; /* 선택 방지 */
-  z-index: 1; /* 화살표 버튼을 위에 표시 */
+  user-select: none;
+  /* 선택 방지 */
+  z-index: 1;
+  /* 화살표 버튼을 위에 표시 */
 }
 
 .arrow.left {
-  left: 40px; /* 왼쪽 화살표 위치 */
+  left: 40px;
+  /* 왼쪽 화살표 위치 */
 }
 
 .arrow.right {
-  right: 40px; /* 오른쪽 화살표 위치 */
+  right: 40px;
+  /* 오른쪽 화살표 위치 */
 }
 
 /* 반응형 디자인 설정 */
 @media (max-width: 768px) {
   .hero {
-    padding: 2rem 1.5rem; /* 패딩 조정 */
-    height: 50vh; /* 높이 줄이기 */
+    padding: 2rem 1.5rem;
+    /* 패딩 조정 */
+    height: 50vh;
+    /* 높이 줄이기 */
   }
 
   h2 {
-    font-size: 1.8rem; /* 제목 크기 조정 */
+    font-size: 1.8rem;
+    /* 제목 크기 조정 */
   }
 
   p {
-    font-size: 1rem; /* 본문 크기 조정 */
+    font-size: 1rem;
+    /* 본문 크기 조정 */
   }
 
   .cta-button {
-    padding: 0.5rem 1rem; /* 버튼 패딩 조정 */
-    font-size: 0.9rem; /* 버튼 글자 크기 조정 */
+    padding: 0.5rem 1rem;
+    /* 버튼 패딩 조정 */
+    font-size: 0.9rem;
+    /* 버튼 글자 크기 조정 */
   }
 }
 
 @media (max-width: 480px) {
   .hero {
     padding: 2rem 1rem;
-    height: 40vh; /* 높이 줄이기 */
+    height: 40vh;
+    /* 높이 줄이기 */
   }
 
   h2 {
-    font-size: 1.5rem; /* 제목 크기 조정 */
+    font-size: 1.5rem;
+    /* 제목 크기 조정 */
   }
 
   p {
-    font-size: 0.9rem; /* 본문 크기 조정 */
+    font-size: 0.9rem;
+    /* 본문 크기 조정 */
   }
 
   .cta-button {
-    padding: 0.5rem 0.75rem; /* 버튼 패딩 조정 */
-    font-size: 0.8rem; /* 버튼 글자 크기 조정 */
+    padding: 0.5rem 0.75rem;
+    /* 버튼 패딩 조정 */
+    font-size: 0.8rem;
+    /* 버튼 글자 크기 조정 */
   }
 }
 </style>
