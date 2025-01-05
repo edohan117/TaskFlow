@@ -6,9 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.edohan.fuse.mapper.CommonMapper;
 import com.edohan.fuse.mapper.MailMapper;
-import com.edohan.fuse.service.CommonService;
 import com.edohan.fuse.service.MailService;
 
 import jakarta.mail.internet.InternetAddress;
